@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {GoogleMap, Marker, withGoogleMap} from 'react-google-maps';
+import {GoogleMap, Marker, withGoogleMap, withScriptjs} from 'react-google-maps';
 
 class GoogleMaps extends Component {
 
@@ -9,4 +9,4 @@ class GoogleMaps extends Component {
 
 }
 
-export default withGoogleMap(GoogleMaps);
+export default withScriptjs(withGoogleMap(GoogleMaps));
