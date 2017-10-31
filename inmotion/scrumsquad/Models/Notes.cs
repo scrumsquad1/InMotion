@@ -10,6 +10,8 @@ namespace scrumsquad.Models
     {
         [BsonId]
         public string Id { get; set; }
+        public int Lat { get; set; }
+        public int Long { get; set; }
         public string Subject { get; set; }
         public string Details { get; set; }
         public int Priority { get; set; }

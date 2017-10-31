@@ -1,79 +1,198 @@
 let focusNote = null;
+let noteList;
 
-$(document).on('pagebeforeshow ', '#main', function () {   // see: https://stackoverflow.com/questions/14468659/jquery-mobile-document-ready-vs-page-events
+noteList = new NoteList();
 
-    const el_Display = $("#div_notes_list");
-    const in_Text_Filter = $("#in_text_filter");
-    in_Text_Filter.keyup(() => {
-        updateNotes()
-    });
+$(document).on('pagebeforeshow ', '#main', onCreateMain);
+$(document).on('pagebeforeshow ', '#add', onCreateAdd);
+$(document).on('pagebeforeshow ', '#details', onCreateDetails);
 
-    let notesList;
-    getNotes((err, result) => {
-        if (!err) {
-            notesList = result;
-            updateNotes()
-        } else {
-            alert("ERR");
-        }
-    });
+function onCreateMain() {
 
-    function updateNotes() {
+    $('.page_title').html("Main");
 
+    focusNote = null;
 
+    const template_note = $(".templates .note");
+    const el_Display = $("#notes_display");
+
+    noteList.setOnChange((list) => {
         el_Display.empty();
-        notesList.forEach(function (note, index) {
-            if (!in_Text_Filter.val() || note.Subject.indexOf(in_Text_Filter.val()) > -1) {
-                el_Display.append(generateNoteView(note));
-                if (index < notesList.length - 1) {
-                    el_Display.append("<hr/>");
-                }
-            }
+        list.forEach((note) => {
+            el_Display.append($(generateNoteFromTemplate(note)).collapsible());
         });
-        $('.note .delete-button').click(function (t) {
-            var clickedId = t.target.parentNode.id.replace("note_", "");
-            notesList.forEach(function (note) {
-                if (note.Id == clickedId) {
-                    deleteNote(note);
-                }
-            })
-        });
-        $('.note .edit-button').click(function (t) {
-            var clickedId = t.target.parentNode.id.replace("note_", "");
-            notesList.forEach(function (note) {
-                if (note.Id == clickedId) {
-                    editNote(note);
-                }
-            })
-        })
+        el_Display.listview("refresh");
+    });
+
+    if (!noteList.hasList()) {
+        noteList.fetchNotesFromServer()
     }
 
-    function generateNoteView(note) {
-        return "<div class='note' id='note_" + note.Id + "'>" +
-            "<p>" + note.Subject + "</p>" +
-            "<p class='text-muted'>" + note.Details + "</p>" +
-            "<button class='btn btn-danger delete-button'>Delete</button> " +
-            "<button class='btn btn-warning edit-button'>Edit</button> " +
-            "</div>" +
-            "</div>";
+    function generateNoteFromTemplate(note) {
+        const newNote = template_note.clone();
+
+        newNote.find('.note_title').html(note.Subject.charAt(0).toUpperCase() + note.Subject.slice(1));
+        newNote.find('.note_lat').html(note.Lat);
+        newNote.find('.note_long').html(note.Long);
+        newNote.find('.note_priority').html(note.Priority);
+        newNote.find('.note_details').html(note.Details);
+        newNote.find('.delete-button').click(() => {
+            deleteNote(note)
+        });
+        newNote.find('.edit-button').click(() => {
+            editNote(note)
+        });
+        newNote.find('#detailsButton').click(() => {
+            detailedNote(note)
+        });
+
+        return newNote
     }
 
     function editNote(note) {
+        focusNote = note;
+        //$.mobile.changePage($("#add"))
+    }
 
+    function detailedNote(note) {
+        focusNote = note;
+        $.mobile.changePage($("#details"))
     }
 
     function deleteNote(note) {
-        console.log(note);
+        noteList.deleteNoteFromList(note)
+    }
+    //const in_Button_Add_Note = $("#in_button_add_note");
+    ////const in_Number_Lat = $("#in_number_lat");
+    ////const in_Number_Long = $("#in_number_long");
+    //const in_Text_Subject = $("#in_text_subject");
+    //const in_Text_Details = $("#in_text_details");
+    //const in_Number_Priority = $("#in_number_priority");
+
+    //function initBinds() {
+    //    in_Button_Add_Note.click(function () {
+
+    //        const note = {
+    //            Lat: in_Number_Lat.val(),
+    //            //Long: in_Number_Long.val(),
+    //            //Subject: in_Text_Subject.val(),
+    //            Details: in_Text_Details.val(),
+    //            Priority: in_Number_Priority.val()
+    //        };
+
+    //        if (focusNote !== null) {
+    //            noteList.editNoteInList({ Id: focusNote.Id, ...note }, finishOrErrorResponse);
+    //        } else {
+    //            noteList.addNoteToList(note, finishOrErrorResponse);
+    //        }
+
+    //    });
+    //}
+
+    //function destroyBinds() {
+    //    in_Button_Add_Note.off();
+    //}
+
+    //const finishOrErrorResponse = (err) => {
+    //    if (!err) {
+    //        focusNote = null;
+    //        setEditFields(null);
+    //        destroyBinds();
+    //        initBinds(); 
+    //       // $.mobile.changePage($("#main"));
+    //    } else {
+    //        console.error(err);
+    //    }
+    //};
+
+    //function setEditFields(note) {
+    //    if (note) {
+    //        in_Text_Subject.val(note.Subject);
+    //        in_Text_Details.val(note.Details);
+    //        in_Number_Priority.val(note.Priority);
+    //    } else {
+    //        in_Text_Subject.val(null);
+    //        in_Text_Details.val(null);
+    //        in_Number_Priority.val(0);
+    //    }
+    //}
+
+    //setEditFields(focusNote);
+    //initBinds();
+}
+
+function onCreateAdd() {
+
+    $('.page_title').html("Add");
+    const in_Button_Add_Note = $("#in_button_add_note");
+    const in_Number_Lat = $("#in_number_lat");
+    const in_Number_Long = $("#in_number_long");
+    const in_Text_Subject = $("#in_text_subject");
+    const in_Text_Details = $("#in_text_details");
+    const in_Number_Priority = $("#in_number_priority");
+
+    function initBinds() {
+        in_Button_Add_Note.click(function () {
+
+            const note = {
+                Lat: in_Number_Lat.val(),
+                Long: in_Number_Long.val(),
+                Subject: in_Text_Subject.val(),
+                Details: in_Text_Details.val(),
+                Priority: in_Number_Priority.val()
+            };
+
+            if (focusNote !== null) {
+                noteList.editNoteInList({ Id: focusNote.Id, ...note }, finishOrErrorResponse);
+            } else {
+                noteList.addNoteToList(note, finishOrErrorResponse);
+            }
+
+        });
     }
 
-});
+    function destroyBinds() {
+        in_Button_Add_Note.off();
+    }
 
-$(document).on('pagebeforeshow ', '#add', function () {   // see: https://stackoverflow.com/questions/14468659/jquery-mobile-document-ready-vs-page-events
+    const finishOrErrorResponse = (err) => {
+        if (!err) {
+            focusNote = null;
+            setEditFields(null);
+            destroyBinds();
+            // initBinds();
+            $.mobile.changePage($("#main"));
+        } else {
+            console.error(err);
+        }
+    };
 
+    function setEditFields(note) {
+        if (note) {
+            in_Text_Subject.val(note.Subject);
+            in_Text_Details.val(note.Details);
+            in_Number_Priority.val(note.Priority);
+        } else {
+            in_Text_Subject.val(null);
+            in_Text_Details.val(null);
+            in_Number_Priority.val(0);
+        }
+    }
 
-});
+    setEditFields(focusNote);
+    initBinds();
 
+}
 
+function onCreateDetails() {
 
+    $('.page_title').html("Details");
 
+    const displayNote = $("#showData");
+    const noteTitle = $("#noteTitle");
+    const titleText = "" + focusNote.Subject;
+    const noteText = "<p>Priority: " + focusNote.Priority + "<br /> Subject: " + focusNote.Subject + "<br /> Details: " + focusNote.Details + "</p>";
+    noteTitle.text(titleText);
+    displayNote.html(noteText);
 
+}
