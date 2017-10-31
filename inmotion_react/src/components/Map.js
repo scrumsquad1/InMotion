@@ -19,20 +19,6 @@ class GoogleMaps extends Component {
             }));
         });
 
-        // return lists.map((li) => (
-        //
-        //     console.log(li)
-        //
-        {/*<OverlayView*/
-        }
-        // position={{lat: 47.585224, lng: -122.148861}}
-        // mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-        // >
-        {/*<TodoList listId={0}/>*/
-        }
-        // </OverlayView>
-        // ));
-
     }
 
     render() {
