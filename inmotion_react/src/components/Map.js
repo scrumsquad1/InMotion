@@ -14,7 +14,6 @@ class GoogleMaps extends Component {
                     mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
                 >
                     <TodoList listId={'98075'}/>
-                    <ListItem/>
                 </OverlayView>
             </GoogleMap>
         )
