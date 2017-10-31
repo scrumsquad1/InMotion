@@ -1,6 +1,7 @@
 import {combineActions} from '../_SpecRedux/index';
 
-import action_FetchLists from './action_Lists_FetchLists'
+import action_Lists_FetchLists from './action_Lists_FetchLists'
+import action_Locations_FetchLocations from './action_Locations_FetchLocations'
 import action_Maps_HideItem from './action_Maps_HideItem'
 import action_Maps_ShowItem from './action_Maps_ShowItem'
 import action_Navigation_PathChange from './action_Navigation_PathChange';
@@ -12,7 +13,8 @@ import action_User_SignOut from './action_User_SignOut';
 import action_User_SignUp from './action_User_SignUp';
 
 export default combineActions([
-    action_FetchLists,
+    action_Lists_FetchLists,
+    action_Locations_FetchLocations,
     action_Maps_ShowItem,
     action_Maps_HideItem,
     action_Navigation_PathChange,

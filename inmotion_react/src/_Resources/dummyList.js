@@ -1,4 +1,4 @@
-export const LOCTIONS = [
+export const LOCATIONS = [
     {
         id: 0,
         name: 'Bellevue College',
@@ -11,7 +11,7 @@ export const LOCTIONS = [
     }
 ];
 
-export default LISTS = [
+export const LISTS = [
     {
         location: 0,
         data: [
@@ -50,5 +50,18 @@ export default LISTS = [
             }
         ]
     }
-]
+];
 
+export default function fakeJoin({listItem, locations}) {
+
+    let locationData = null;
+    locations.forEach(l => {
+        console.log(l.id, listItem.location);
+        if (l.id === listItem.location) {
+            locationData = l;
+        }
+    });
+    listItem.location = locationData;
+    return listItem;
+
+}
