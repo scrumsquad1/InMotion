@@ -32,4 +32,4 @@ class ActionSetLoginVisible extends SingleFireAction {
 
 }
 
-export default ActionSetLoginVisible;
+export default new ActionSetLoginVisible();

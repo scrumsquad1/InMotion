@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {GoogleMap, Marker, withGoogleMap, withScriptjs, OverlayView} from 'react-google-maps';
 import {connect} from 'react-redux'
 import TodoList from './TodoList'
+import ListItem from './ListItem';
 
 class GoogleMaps extends Component {
 
@@ -13,6 +14,7 @@ class GoogleMaps extends Component {
                     mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
                 >
                     <TodoList listId={'98075'}/>
+                    <ListItem/>
                 </OverlayView>
             </GoogleMap>
         )

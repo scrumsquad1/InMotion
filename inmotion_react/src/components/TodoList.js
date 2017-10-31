@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types'
-import {Panel} from 'react-bootstrap';
+import action_Maps_ShowItem from '../actions/action_Maps_ShowItem'
 
 class TodoList extends Component {
 
     static propTypes = {
-        listId: PropTypes.oneOfType([PropTypes.string, PropTypes.number,]).isRequired
+        listId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
     };
 
     constructor({lists, listId}) {
@@ -16,13 +16,24 @@ class TodoList extends Component {
     }
 
     generateListBody() {
-        return this.list.map((li) => <p>{li.title}</p>)
+        return (
+            <div className="list-group">
+                {this.list.map((li) =>
+                    <a onClick={() => {
+                        this.props.dispatch(action_Maps_ShowItem.action(li.id))
+                    }} href="#" key={li.id} className="list-group-item">{li.title}</a>
+                )}
+            </div>
+        )
     }
 
     render() {
-        return <Panel header={this.listId}>
+        return <div className="panel panel-default">
+            <div className="panel-heading">
+                {this.listId}
+            </div>
             {this.generateListBody()}
-        </Panel>
+        </div>
     }
 
 }

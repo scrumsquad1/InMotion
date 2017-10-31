@@ -32,4 +32,4 @@ class ActionRedirect extends SingleFireAction {
 
 }
 
-export default ActionRedirect;
+export default new ActionRedirect();

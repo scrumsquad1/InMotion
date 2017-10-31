@@ -56,4 +56,4 @@ class ActionSignIn extends FetchAction {
 
 }
 
-export default ActionSignIn;
+export default new ActionSignIn();

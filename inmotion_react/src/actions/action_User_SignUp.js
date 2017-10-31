@@ -36,4 +36,4 @@ class ActionSignUp extends FetchAction {
 
 }
 
-export default ActionSignUp;
+export default new ActionSignUp();

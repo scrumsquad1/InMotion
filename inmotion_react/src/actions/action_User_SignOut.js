@@ -30,4 +30,4 @@ class ActionSignOut extends FetchAction {
 
 }
 
-export default ActionSignOut;
+export default new ActionSignOut();

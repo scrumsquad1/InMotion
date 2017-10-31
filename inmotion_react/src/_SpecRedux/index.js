@@ -19,8 +19,6 @@ export const combineActions = (actions) => {
     let reducerObject = {};
     actions.forEach((action) => {
 
-        action = new action();
-
         if (!reducerObject[action.storeName])
             reducerObject[action.storeName] = [];
 

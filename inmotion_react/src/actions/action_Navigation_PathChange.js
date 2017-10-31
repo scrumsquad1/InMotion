@@ -34,4 +34,4 @@ class ActionPathChange extends SingleFireAction {
 
 }
 
-export default ActionPathChange;
+export default new ActionPathChange();

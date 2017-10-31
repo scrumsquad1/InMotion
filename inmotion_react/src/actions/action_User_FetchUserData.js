@@ -41,4 +41,4 @@ class ActionFetchUserData extends FetchAction {
 
 }
 
-export default ActionFetchUserData;
+export default new ActionFetchUserData();

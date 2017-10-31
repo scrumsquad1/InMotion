@@ -75,7 +75,7 @@ export default class BaseAction {
     get singleArgumentType() {
     }
 
-    action = (onComplete) => (args) => (dispatch) => {
+    action = (args) => (dispatch) => {
 
         // Check arguments
         if (this.singleArgumentType) {
@@ -99,7 +99,7 @@ export default class BaseAction {
         }
 
         this.onExecute(dispatch, args);
-        onComplete({dispatch});
+        this.onFinish({dispatch});
 
     };
 
@@ -109,6 +109,10 @@ export default class BaseAction {
 
     onExecute(dispatch, args) {
         throw new InitializationError('onExecute must be overridden');
+    }
+
+    onFinish({dispatch}) {
+
     }
 
     getDefaultFields() {

@@ -22,4 +22,4 @@ class ActionFetchLists extends FetchAction {
     }
 }
 
-export default ActionFetchLists;
+export default new ActionFetchLists();
