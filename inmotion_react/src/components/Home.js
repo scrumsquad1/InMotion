@@ -8,7 +8,6 @@ class Home extends Component {
     render() {
         return (
             <div>
-                <h1 style={{color: 'red', 'z-index': 99}}> Hello !</h1>
                 <GoogleMaps
                     googleMapURL={r.keys.GOOGLE_MAPS}
                     containerElement={<div style={
@@ -29,6 +28,4 @@ class Home extends Component {
 
 }
 
-export default connect(() => {
-    return {}
-})(Home)
+export default connect(() => ({}))(Home)

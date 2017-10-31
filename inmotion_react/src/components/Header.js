@@ -46,6 +46,4 @@ class Header extends Component {
 
 }
 
-export default connect(({user: {userData}, navigation}) => {
-    return {userData, navigation}
-})(Header);
+export default connect(({user: {userData}, navigation}) => ({userData, navigation}))(Header);
