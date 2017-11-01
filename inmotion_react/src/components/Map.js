@@ -98,4 +98,4 @@ export default connect(assignStateToProps)(wrappedMap) // Pretend wrappedMap is 
 // ));
 
 // Finally!!!
-// export default connect(({mapsStore, listsStore, locationsStore}) => ({mapsStore, listsStore, locationStore})(Maps);
+// export default connect(({mapsStore, listsStore, locationsStore}) => ({mapsStore, listsStore, locationStore})(Map);
