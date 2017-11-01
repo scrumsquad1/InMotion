@@ -46,4 +46,5 @@ class Header extends Component {
 
 }
 
+// See ./Maps.js for explanation
 export default connect(({user: {userData}, navigation}) => ({userData, navigation}))(Header);

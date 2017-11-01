@@ -40,9 +40,9 @@ class Map extends Component { // Create a normal component
 
 // Now instead of just exporting the component, we are going to use 'connect' from redux.
 // This will allow us to access the stores we created in the reducers as props. But we must first tell redux what stores we want to use.
-function assignStateToProps(state) { // <--- Ok, so I don't actually know why the argument is called 'state', really it doesn't matter since javascript doesn't care about names. Either way, this will hold all the stores we created.
+function assignStateToProps(state) { // State is referring to the massive json file I was talking about that controls the whole project
 
-    // We will return an object with what stores like this:
+    // We will return an object with what stores we want to use like this:
     return {
         mapsStore: state.mapsStore, // Can now be accessed in the component with this.props.mapsStore
         listsStore: state.listsStore, // Can now be accessed in the component with this.props.listsStore
@@ -68,7 +68,7 @@ export default connect(assignStateToProps)(Map)
 // }))(Map)
 
 // Even better, observe the following
-// function test({a, b}) { <--- extracting properties from within the constructor
+// function test({a, b}) { <--- extracting properties from within the constructor using {}
 //     console.log(a);
 //     console.log(b);
 // }
@@ -87,7 +87,7 @@ export default connect(assignStateToProps)(Map)
 //     }
 // ));
 
-// Great, but that seems redundant since I am typing it the names twice. For shorthand I can do
+// Great, but that seems redundant since I am typing the names twice. For shorthand I can do
 // export default connect(({mapsStore, listsStore, locationsStore}) => (
 //     {
 //         mapsStore, (equivalent of mapsStore: mapsStore)

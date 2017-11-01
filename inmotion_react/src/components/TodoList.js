@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types'
-import action_Maps_ShowItem from '../actions/action_Maps_ShowItem'
+import action_ShowItem from '../_redux/actions/maps/action_ShowItem';
 
 class TodoList extends Component {
 
@@ -20,7 +20,7 @@ class TodoList extends Component {
             <div className="list-group">
                 {this.list.map((li) =>
                     <a onClick={() => {
-                        this.props.dispatch(action_Maps_ShowItem.action(li.id))
+                        this.props.dispatch(action_ShowItem(li.id))
                     }} href="#" key={li.id} className="list-group-item">{li.title}</a>
                 )}
             </div>
@@ -38,4 +38,5 @@ class TodoList extends Component {
 
 }
 
+// See ./Maps.js for explanation
 export default connect(({lists}) => ({lists}))(TodoList)

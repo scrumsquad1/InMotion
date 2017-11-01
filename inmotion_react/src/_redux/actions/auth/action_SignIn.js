@@ -1,4 +1,6 @@
-export const TYPE_USER_SIGNIN = 'type_user_signin';
+export const TYPE_AUTH_SIGNIN_START = 'type_auth_signin_start';
+export const TYPE_AUTH_SIGNIN_COMPLETE = 'type_auth_signin_complete';
+export const TYPE_AUTH_SIGNIN_ERROR = 'type_auth_signin_error';
 
 export default ({username, password}) => (dispatch) => {
 

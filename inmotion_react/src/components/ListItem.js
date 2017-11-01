@@ -16,4 +16,5 @@ class TodoList extends Component {
 
 }
 
+// See ./Maps.js for explanation
 export default connect(({lists}) => ({lists}))(TodoList)

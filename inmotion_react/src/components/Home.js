@@ -28,4 +28,5 @@ class Home extends Component {
 
 }
 
+// See ./Maps.js for explanation
 export default connect(() => ({}))(Home)

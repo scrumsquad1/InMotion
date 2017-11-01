@@ -1,3 +1,5 @@
+import combineReducers from 'redux/es/combineReducers';
+
 import reducer_User from './redcuer_User';
 import reducer_Lists from './reducer_Lists';
 import reducer_Maps from './reducer_Maps';
