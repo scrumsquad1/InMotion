@@ -16,7 +16,7 @@ class Header extends Component {
                 </NavDropdown>
             )
         } else {
-            button = <NavItem eventKey={1} href="#" onClick={() => console.log('Sign In')}>{r.string.signIn}</NavItem>
+            button = <NavItem eventKey={1} href="#" onClick={() => console.log('Sign In')}>{r.strings.signIn}</NavItem>
         }
         return (
             <Nav pullRight>
@@ -47,4 +47,4 @@ class Header extends Component {
 }
 
 // See ./Maps.js for explanation
-export default connect(({user: {userData}, navigation}) => ({userData, navigation}))(Header);
+export default connect(({authStore: {userData}, navigationStore}) => ({userData, navigationStore}))(Header);

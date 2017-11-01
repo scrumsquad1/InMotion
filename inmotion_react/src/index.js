@@ -41,8 +41,8 @@ store.subscribe(() => {
     }
 });
 
+//Provider allows us to user 'connect' to access the stores from components See ./components/Map.js
 ReactDOM.render(
-    //Provider allows us to user 'connect' to access the stores from components See ./components/Map.js
     <Provider store={store}>
         <Router history={history}>
             <div className='App'>

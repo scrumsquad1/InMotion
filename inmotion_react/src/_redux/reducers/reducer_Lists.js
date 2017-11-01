@@ -1,13 +1,13 @@
 import _ from 'lodash';
 import {TYPE_LISTS_FETCHLISTS_COMPLETE, TYPE_LISTS_FETCHLISTS_ERROR, TYPE_LISTS_FETCHLISTS_START} from '../actions/lists/action_FetchLists';
 import states from '../../_Resources/states'
-import dummyLists from '../../_Resources/dummyList';
+import {LISTS} from '../../_Resources/dummyList';
 
 const DEFAULT_STATE = {
     fetchListsState: states.UNINITIALIZED,
     fetchListsError: null,
     // listData: null
-    lists: dummyLists
+    lists: LISTS
 };
 
 /**
@@ -15,7 +15,7 @@ const DEFAULT_STATE = {
  *
  * See ./reducer_Navigation for details about reducers
  */
-export default (previousState, action) => {
+export default (previousState = DEFAULT_STATE, action) => {
 
     let stateChange = {};
 
