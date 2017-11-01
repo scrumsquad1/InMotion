@@ -2,26 +2,26 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types'
 import action_ShowItem from '../_redux/actions/maps/action_ShowItem';
+import r from '../_Resources/r';
 
 class TodoList extends Component {
 
     static propTypes = {
-        listId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
+        listData: PropTypes.array.isRequired,
+        listTitle: PropTypes.string
     };
 
-    constructor({lists, listId}) {
-        super();
-        this.listId = listId;
-        this.list = lists.lists[listId];
-    }
+    static defaultProsp = {
+        listTitle: r.strings.untitled
+    };
 
     generateListBody() {
         return (
             <div className="list-group">
-                {this.list.map((li) =>
+                {this.props.listData.map((li) =>
                     <a onClick={() => {
                         this.props.dispatch(action_ShowItem(li.id))
-                    }} href="#" key={li.id} className="list-group-item">{li.title}</a>
+                    }} key={li.id} className="list-group-item">{li.title}</a>
                 )}
             </div>
         )
@@ -30,7 +30,7 @@ class TodoList extends Component {
     render() {
         return <div className="panel panel-default">
             <div className="panel-heading">
-                {this.listId}
+                {this.props.listTitle}
             </div>
             {this.generateListBody()}
         </div>
@@ -39,4 +39,4 @@ class TodoList extends Component {
 }
 
 // See ./Maps.js for explanation
-export default connect(({lists}) => ({lists}))(TodoList)
+export default connect(({listsStore}) => ({listsStore}))(TodoList)

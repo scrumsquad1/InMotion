@@ -25,6 +25,9 @@ export default (previousState = DEFAULT_STATE, action) => {
             stateChange.visibleItemId = null;
             break;
         }
+        default: {
+            break;
+        }
     }
 
     return {..._.cloneDeep(previousState), ...stateChange};

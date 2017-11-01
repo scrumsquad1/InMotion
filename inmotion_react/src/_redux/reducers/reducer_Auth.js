@@ -87,6 +87,9 @@ export default (previousState = DEFAULT_STATE, action) => {
             stateChange.signupError = action.payload;
             break;
         }
+        default: {
+            break;
+        }
 
     }
 

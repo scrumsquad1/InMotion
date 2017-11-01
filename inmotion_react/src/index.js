@@ -15,14 +15,14 @@ import Home from './components/Home';
 import action_PathChange from './_redux/actions/navigation/action_PathChange';
 
 // Hello!
-
+let previousState;
 const middleware = applyMiddleware(
     thunk, // See /src/_redux/lists/action_FetchLists for details on what 'thunk' is
     createLogger({
         collapsed: true, // Collapse the log in the console by default
         diff: true, // Log the differences between the previous and the new state
         predicate: (getState, action) => action.type.substr(0, 12) !== '@@redux-form' // Dont log to console the actions dispatched by redux-form because there are so many it can be spammy.
-    })
+    }),
 );
 
 const store = createStore(allReducers, middleware); // Create the store redux will use. See /src/_redux/reducers/index.js
@@ -53,5 +53,9 @@ ReactDOM.render(
     </Provider>,
     document.getElementById('root')
 );
+
+// console.log('Started');
+console.warn('FirstState');
+console.log(store.getState());
 
 registerServiceWorker();

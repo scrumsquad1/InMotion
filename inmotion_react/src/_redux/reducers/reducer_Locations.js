@@ -15,7 +15,9 @@ export default (previousState = DEFAULT_VALUES, action) => {
     let stateChange = {};
 
     switch (action.type) {
-
+        default: {
+            break;
+        }
     }
 
     return {..._.cloneDeep(previousState), ...stateChange};

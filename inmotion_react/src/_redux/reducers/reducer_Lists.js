@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import {TYPE_LISTS_FETCHLISTS_COMPLETE, TYPE_LISTS_FETCHLISTS_ERROR, TYPE_LISTS_FETCHLISTS_START} from '../actions/lists/action_FetchLists';
-import states from '../../_Resources/states'
+import states from '../../_Resources/status'
 import {LISTS} from '../../_Resources/dummyList';
 
 const DEFAULT_STATE = {
@@ -33,6 +33,9 @@ export default (previousState = DEFAULT_STATE, action) => {
         case TYPE_LISTS_FETCHLISTS_ERROR: {
             stateChange.fetchListsState = states.ERROR;
             stateChange.fetchListsError = action.payload;
+            break;
+        }
+        default: {
             break;
         }
     }

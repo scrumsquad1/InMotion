@@ -32,7 +32,7 @@ class Header extends Component {
             <Navbar>
                 <Navbar.Header>
                     <Navbar.Brand>
-                        <a href="#">{r.strings.title}</a>
+                        <a>{r.strings.title}</a>
                     </Navbar.Brand>
                 </Navbar.Header>
                 <Navbar.Collapse>

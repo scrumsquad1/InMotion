@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export const LOCATIONS = [
     {
         id: 0,
@@ -56,11 +58,11 @@ export default function fakeJoin({listItem, locations}) {
 
     let locationData = null;
     locations.forEach(l => {
-        console.log(l.id, listItem.location);
         if (l.id === listItem.location) {
             locationData = l;
         }
     });
+    listItem = _.cloneDeep(listItem);
     listItem.location = locationData;
     return listItem;
 

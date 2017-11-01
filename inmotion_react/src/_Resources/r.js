@@ -2,7 +2,8 @@ export default {
     strings: {
         title: 'InMotion',
         signIn: 'SignIn',
-        signOut: 'SignOut'
+        signOut: 'SignOut',
+        untitled: 'Untitled'
     },
     routes: {},
     keys: {

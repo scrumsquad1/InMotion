@@ -1,5 +1,4 @@
 import fetcher from '../'
-import checkRouteArg from './_utils/checkRouteArg';
 
 const path = '/api/lists';
 

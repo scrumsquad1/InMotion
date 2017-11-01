@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
-import {GoogleMap, withGoogleMap, withScriptjs} from 'react-google-maps';
+import {GoogleMap, OverlayView, withGoogleMap, withScriptjs} from 'react-google-maps';
 import {connect} from 'react-redux'
 import fakeJoin from '../_Resources/dummyList';
+import TodoList from './TodoList';
 
 /**
  * How we use redux in a Component
@@ -18,11 +19,13 @@ class Map extends Component { // Create a normal component
         const lists = this.props.listsStore.lists;
         const locations = this.props.locationsStore.locations;
 
-        lists.map(li => {
-            console.log(fakeJoin({
-                listItem: li,
-                locations: locations
-            }));
+        return lists.map(li => {
+            const {location: {location, name, id}, data} = fakeJoin({listItem: li, locations});
+            return (
+                <OverlayView key={id} position={location} mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}>
+                    <TodoList listData={data} listTitle={name}/>
+                </OverlayView>
+            )
         });
 
     }
@@ -97,5 +100,5 @@ export default connect(assignStateToProps)(wrappedMap) // Pretend wrappedMap is 
 //     }
 // ));
 
-// Finally!!!
+// Tada!!!
 // export default connect(({mapsStore, listsStore, locationsStore}) => ({mapsStore, listsStore, locationStore})(Map);

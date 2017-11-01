@@ -33,6 +33,9 @@ export default (previousState = DEFAULT_STATE, // If state is null, state will b
             stateChange.redirectPath = action.payload; // Assigning this variable to a path will cause the application to change pages. Once the page changes, TYPE_NAVIGATION_PATHCHANGE will be dispatched and the code above will be run. See /index.js
             break;
         }
+        default: {
+            break;
+        }
     }
 
     const clonedPreviousState = _.cloneDeep(previousState); // Cloning an object is hard in javascript because objects are passed with references. lodash's (_) cloneDeep method goes through every property in an object and copies it.
