@@ -1,16 +1,22 @@
 import React, {Component} from 'react';
-import {GoogleMap, Marker, withGoogleMap, withScriptjs, OverlayView} from 'react-google-maps';
+import {GoogleMap, withGoogleMap, withScriptjs} from 'react-google-maps';
 import {connect} from 'react-redux'
-import TodoList from './TodoList'
-import ListItem from './ListItem';
 import fakeJoin from '../_Resources/dummyList';
 
-class GoogleMaps extends Component {
+/**
+ * How we use redux in a Component
+ */
+
+class Map extends Component { // Create a normal component
+
+    // Never use setState(). setState is dead to us.
 
     generateOverlays() {
 
-        const lists = this.props.lists.lists;
-        const locations = this.props.locations.locations;
+        // Look at the bottom before looking at what I am doing here
+
+        const lists = this.props.listsStore.lists;
+        const locations = this.props.locationsStore.locations;
 
         lists.map(li => {
             console.log(fakeJoin({
@@ -31,4 +37,64 @@ class GoogleMaps extends Component {
 
 }
 
-export default connect(({maps, lists, locations}) => ({maps, lists, locations}))(withScriptjs(withGoogleMap(GoogleMaps)));
+
+// Now instead of just exporting the component, we are going to use 'connect' from redux.
+// This will allow us to access the stores we created in the reducers as props. But we must first tell redux what stores we want to use.
+function assignStateToProps(state) { // <--- Ok, so I don't actually know why the argument is called 'state', really it doesn't matter since javascript doesn't care about names. Either way, this will hold all the stores we created.
+
+    // We will return an object with what stores like this:
+    return {
+        mapsStore: state.mapsStore, // Can now be accessed in the component with this.props.mapsStore
+        listsStore: state.listsStore, // Can now be accessed in the component with this.props.listsStore
+        locationsStore: state.locationsStore // Can now be accessed in the component with this.props.locationsStore
+    }
+
+}
+
+export default connect(assignStateToProps)(Map)
+
+// I personally like to make the assignStateToProps part inline
+// export default connect((state) => {
+//    return {
+//        ...blah
+//    }
+// })(Map);
+
+// If your () => { return blah } function returns something immediately, you can cut out the return part by wrapping the second part in (). For example
+// export default connect((state) => ({
+//      mapsStore: state.mapsStore
+//      listsStore: state.listsStore
+//      locationsStore: state.locationsStore
+// }))(Map)
+
+// Even better, observe the following
+// function test({a, b}) { <--- extracting properties from within the constructor
+//     console.log(a);
+//     console.log(b);
+// }
+// test({
+//     a: 10,
+//     b: 20
+// });
+// Outputs a and b.
+
+// We can do the same with state, if I know I want the mapsStore, listsStore, locationStore I can do
+// export default connect(({mapsStore, listsStore, locationsStore}) => (
+//     {
+//         mapsStore: mapsStore,
+//         listsStore: listsStore,
+//         locationsStore: locationsStore
+//     }
+// ));
+
+// Great, but that seems redundant since I am typing it the names twice. For shorthand I can do
+// export default connect(({mapsStore, listsStore, locationsStore}) => (
+//     {
+//         mapsStore, (equivalent of mapsStore: mapsStore)
+//         listsStore,
+//         locationsStore
+//     }
+// ));
+
+// Finally!!!
+// export default connect(({mapsStore, listsStore, locationsStore}) => ({mapsStore, listsStore, locationStore})(Maps);

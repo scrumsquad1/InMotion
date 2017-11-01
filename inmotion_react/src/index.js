@@ -9,35 +9,40 @@ import {Provider} from 'react-redux'
 import {Route, Router} from 'react-router-dom';
 import Header from './components/Header';
 import {createBrowserHistory} from 'history';
-import allReducers from './actions'
+import allReducers from './_redux/reducers'
 import Home from './components/Home';
-import onStart from './_Resources/onStart'
 
-const middleware = applyMiddleware(thunk, createLogger({
-    collapsed: true,
-    diff: true,
-    predicate: (getState, action) => action.type.substr(0, 12) !== '@@redux-form'
-}));
+import action_PathChange from './_redux/actions/navigation/action_PathChange';
 
-const store = createStore(allReducers, middleware);
+// Hello!
 
-// Configure manual control of router
+const middleware = applyMiddleware(
+    thunk, // See /src/_redux/lists/action_FetchLists for details on what 'thunk' is
+    createLogger({
+        collapsed: true, // Collapse the log in the console by default
+        diff: true, // Log the differences between the previous and the new state
+        predicate: (getState, action) => action.type.substr(0, 12) !== '@@redux-form' // Dont log to console the actions dispatched by redux-form because there are so many it can be spammy.
+    })
+);
+
+const store = createStore(allReducers, middleware); // Create the store redux will use. See /src/_redux/reducers/index.js
+
+// Configure manual control of router. For details see /src/_redux/actions/navigation/action_Navigation_PathChange.js
 const history = createBrowserHistory();
 history.listen((obj) => {
-    // store.dispatch(ACTION_PATH_CHANGE(obj.pathname))
+    store.dispatch(action_PathChange(obj.pathname))
 });
 
-// let currentPage = history.currentPage.location.pathname;
+// This is where we will redirect the user to a different page if state.navigation.redirectPath !== null. For details see /src/_redux/actions/navigation/action_Navigation_Redirect.js
 store.subscribe(() => {
-    const redirectPath = store.getState().navigation.redirectPath;
+    const redirectPath = store.getState().navigationStore.redirectPath;
     if (redirectPath) {
         history.push(redirectPath);
     }
 });
 
-onStart(store.dispatch);
-
 ReactDOM.render(
+    //Provider allows us to user 'connect' to access the stores from components See ./components/Map.js
     <Provider store={store}>
         <Router history={history}>
             <div className='App'>
