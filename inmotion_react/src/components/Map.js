@@ -55,6 +55,7 @@ function assignStateToProps(state) { // State is referring to the massive json f
 }
 
 let wrappedMap = withScriptjs(withGoogleMap(Map)); // This is needed for GoogleMaps and is not standard, ignore.
+
 export default connect(assignStateToProps)(wrappedMap) // Pretend wrappedMap is the Map component
 
 // I personally like to make the assignStateToProps part inline
