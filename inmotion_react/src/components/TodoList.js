@@ -20,7 +20,7 @@ class TodoList extends Component {
             <div className="list-group">
                 {this.props.listData.map((li) =>
                     <a onClick={() => {
-                        this.props.dispatch(action_ShowItem(li.id))
+                        this.props.dispatch(action_ShowItem(li.id)) // Here I am dispatching the action_ShowItem() action which takes the item id as an argument. Everything will be re-rendered with updated props.
                     }} key={li.id} className="list-group-item">{li.title}</a>
                 )}
             </div>

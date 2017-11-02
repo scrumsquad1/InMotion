@@ -6,11 +6,17 @@ import TodoList from './TodoList';
 
 /**
  * How we use redux in a Component
+ * For an example of dispatching an action, see ./TodoList.js
  */
 
 class Map extends Component { // Create a normal component
 
-    // Never use setState(). setState is dead to us.
+    // Never use setState(). this.setState is dead to us.
+    // We will now use this.props which we need to setup in assignStateToProps
+    // this.props will be updated anytime redux is sent an action using this.props.dispatch({type: 'SOMEACTION', payload: data})
+    // Actions are usually defined in files, ours are in /src/_redux/actions
+    // Once an action is dispatch such as {type: 'UPDATE_BUTTON_COUNT', payload: 1}
+    // If the action changes the data in a store we are subscribed to, this component will update and this.props.buttonStore.buttonCount will be different if buttonStore was actually a thing
 
     generateOverlays() {
 
@@ -56,6 +62,7 @@ function assignStateToProps(state) { // State is referring to the massive json f
 
 let wrappedMap = withScriptjs(withGoogleMap(Map)); // This is needed for GoogleMaps and is not standard, ignore.
 
+// Finally we use connect!
 export default connect(assignStateToProps)(wrappedMap) // Pretend wrappedMap is the Map component
 
 // I personally like to make the assignStateToProps part inline
