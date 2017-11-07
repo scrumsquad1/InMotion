@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {GoogleMap, OverlayView, withGoogleMap, withScriptjs} from 'react-google-maps';
+import {GoogleMap, Marker, OverlayView, withGoogleMap, withScriptjs} from 'react-google-maps';
 import {connect} from 'react-redux'
 import fakeJoin from '../_Resources/dummyList';
 import TodoList from './TodoList';
@@ -36,10 +36,27 @@ class Map extends Component { // Create a normal component
 
     }
 
+    generatePins() {
+
+        // Look at the bottom before looking at what I am doing here
+
+        const lists = this.props.listsStore.lists;
+        const locations = this.props.locationsStore.locations;
+
+        return lists.map(li => {
+            const {location: {location, name, id}, data} = fakeJoin({listItem: li, locations});
+            return (
+                <Marker key={id} position={location}> </Marker>
+            )
+        });
+
+    }
+
     render() {
         return (
             <GoogleMap defaultZoom={16} defaultCenter={{lat: 47.585224, lng: -122.148861}}>
                 {this.generateOverlays()}
+                {this.generatePins()}
             </GoogleMap>
         )
     }
@@ -109,4 +126,4 @@ export default connect(assignStateToProps)(wrappedMap) // Pretend wrappedMap is 
 // ));
 
 // Tada!!!
-// export default connect(({mapsStore, listsStore, locationsStore}) => ({mapsStore, listsStore, locationStore})(Map);
+// export default connect(({mapsStore, listsStore, locationsStore}) => ({mapsStore, lists
