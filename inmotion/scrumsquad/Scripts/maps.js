@@ -30,7 +30,7 @@
                    label: labels[labelIndex++ % labels.length],
                    map: map
                });
-
+           }
                var infowindow = new google.maps.InfoWindow({
                    content: '<h3>' + marker.position + ' </h3>'
         
