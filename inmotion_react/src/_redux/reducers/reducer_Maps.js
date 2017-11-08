@@ -14,15 +14,15 @@ const DEFAULT_STATE = {
  */
 export default (previousState = DEFAULT_STATE, action) => {
 
-    let stateChange = {};
+    let newState = _.cloneDeep(previousState);
 
     switch (action.type) {
         case TYPE_MAPS_SHOWITEM: {
-            stateChange.visibleItemId = action.payload;
+            newState.visibleItemId = action.payload;
             break;
         }
         case TYPE_MAPS_HIDEITEM: {
-            stateChange.visibleItemId = null;
+            newState.visibleItemId = null;
             break;
         }
         default: {
@@ -30,6 +30,6 @@ export default (previousState = DEFAULT_STATE, action) => {
         }
     }
 
-    return {..._.cloneDeep(previousState), ...stateChange};
+    return newState;
 
 }
