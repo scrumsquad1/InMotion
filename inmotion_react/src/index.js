@@ -13,6 +13,8 @@ import allReducers from './_redux/reducers'
 import Home from './components/Home';
 
 import action_PathChange from './_redux/actions/navigation/action_PathChange';
+import action_FetchLists from './_redux/actions/lists/action_FetchLists';
+import action_FetchLocations from './_redux/actions/locations/action_FetchLocations';
 
 // Hello!
 let previousState;
@@ -53,6 +55,12 @@ ReactDOM.render(
     </Provider>,
     document.getElementById('root')
 );
+
+// Fetch data on start
+store.dispatch((dispatch) => {
+    dispatch(action_FetchLists());
+    dispatch(action_FetchLocations());
+});
 
 // console.log('Started');
 console.warn('FirstState');
