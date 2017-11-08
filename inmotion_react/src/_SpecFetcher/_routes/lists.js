@@ -1,4 +1,4 @@
-import fetcher from '../'
+import fetcher from '../index.js'
 
 const path = '/api/lists';
 
@@ -11,27 +11,22 @@ export const GET_LISTS = (callback) => {
 
 };
 
-//Todo determine list data
+export const GET_LIST_BY_ID = (callback) => {
+
+};
+
+export const GET_LIST_BY_LOCATION = (callback) => {
+
+};
+
+export const GET_LIST_BY_TASK = (callback) => {
+
+};
+
 export const INSERT_LIST = ({email, password, rawPassword, firstname, lastname}, callback) => {
 
-    console.log('STUB');
+};
 
-    // if (password)
-    //     rawPassword = password;
-    // if (
-    //     checkRouteArg('email', email, callback) &&
-    //     checkRouteArg('password', password, callback)
-    // ) {
-    //     fetcher.post({
-    //         path,
-    //         data: {
-    //             email,
-    //             rawPassword,
-    //             firstname,
-    //             lastname
-    //         },
-    //         callback
-    //     });
-    // }
+export const DELETE_LIST = (list, callback) => {
 
 };
