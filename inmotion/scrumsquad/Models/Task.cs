@@ -10,6 +10,5 @@ namespace inmotion.Models
         public int Task_id { get; set; }
         public string Subject { get; set; }
         public int List_id { get; set; }
-
     }
 }

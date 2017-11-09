@@ -10,6 +10,6 @@ namespace inmotion.Models
         public int List_Id { get; set; }
         public string Name { get; set; }
         public int Location_Id { get; set; }
-
+    
     }
 }
