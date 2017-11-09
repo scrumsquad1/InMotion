@@ -18,7 +18,7 @@ namespace inmotion.Controllers
         {
             List<Location> locationList = GetLocationList();
 
-            var location = locationList.FirstOrDefault((p) => p.Id == id);
+            var location = locationList.FirstOrDefault((p) => p.Location_Id == id);
 
             if (location == null)
                 return NotFound();
@@ -28,7 +28,7 @@ namespace inmotion.Controllers
 
         public List<Location> GetLocationList()
         {
-            MySqlConnection conn;
+            MySqlConnection conn = null;
             string myConnectionString = "server=scrumsquadserver.mysql.database.azure.com;uid=scrumuser@scrumsquadserver;" +
             "pwd=scrumpass1!;database=scrumsquaddb";
 
@@ -47,10 +47,9 @@ namespace inmotion.Controllers
                 {
                     locationList.Add(new Location
                     {
-                        Id = reader.GetInt32(0),
-                        Name = reader.GetString(1),
-                        Lat = reader.GetInt32(2),
-                        Long = reader.GetInt32(3)
+                        Location_Id = reader.GetInt32(0),
+                        Lat = reader.GetDouble(1),
+                        Lng = reader.GetDouble(2)
                     });
                 }
             }
@@ -58,9 +57,149 @@ namespace inmotion.Controllers
             {
                 throw ex;
             }
-            //  noteList.Sort();
-            return locationList;
+            finally
+            {
+                //Code in finally block executes in normal scenario as well as in case of exception thrown.
+                // close connection
+                if (conn != null)
+                {
+                    conn.Close();
 
+                }
+            }
+            return locationList;
         }
+
+        [HttpDelete]
+        public HttpResponseMessage DeleteLocation(List passedList)
+        {
+            bool found = true;
+            MySqlConnection conn = null;
+            string myConnectionString = "server=scrumsquadserver.mysql.database.azure.com;uid=scrumuser@scrumsquadserver;" +
+            "pwd=scrumpass1!;database=scrumsquaddb";
+
+            int delId = passedList.Location_Id;
+
+            try
+            {
+                conn = new MySqlConnection(myConnectionString);
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("DELETE FROM Locations WHERE Locations.id=@id", conn);
+                MySqlParameter param = new MySqlParameter("@id", delId);
+                cmd.Parameters.Add(param);
+                //get data stream
+                cmd.ExecuteNonQuery();
+
+                //may not need these additional commands if the table structure allows for CASCADING deletes. List items should
+                // be deleted that have the same location id and tasks should be deleted that have the same list id as the list
+                //items that were deleted
+
+                //MySqlCommand cmd1 = new MySqlCommand("DELETE t FROM Tasks t INNER JOIN Lists l ON t.list_id = l.id " +
+                //"WHERE l.id=@id", conn);
+                //MySqlParameter param1 = new MySqlParameter("@id", delId);
+                //cmd1.Parameters.Add(param1);
+                ////get data stream
+                //cmd1.ExecuteNonQuery();
+
+                //MySqlCommand cmd2 = new MySqlCommand("DELETE FROM Lists WHERE Lists.Location_Id=@id", conn);
+                //MySqlParameter param2 = new MySqlParameter("@id", delId);
+                //cmd2.Parameters.Add(param2);
+                ////get data stream
+                //cmd2.ExecuteNonQuery();
+                ////Check whether record exists or not
+            }
+            catch (Exception ex)
+            {
+                found = false;
+                throw ex;
+            }
+            finally
+            {
+                //Code in finally block executes in normal scenario as well as in case of exception thrown.
+                // close connection
+                if (conn != null)
+                {
+                    conn.Close();
+
+                }
+            }
+            if (!found)
+            {
+                HttpResponseMessage badResponse = new HttpResponseMessage();
+                badResponse.StatusCode = HttpStatusCode.BadRequest;
+                return badResponse;
+            }
+            else
+            {
+                HttpResponseMessage goodResponse = new HttpResponseMessage();
+                goodResponse.StatusCode = HttpStatusCode.OK;
+                return goodResponse;
+            }
+        }
+
+        [HttpPost]
+        public void Save(Location newLocation)
+        {
+            bool exist = false;
+            List<Location> locationList = GetLocationList();
+
+            for (var i = 0; i < locationList.Count; i++)
+            {
+                if (locationList[i].Location_Id == newLocation.Location_Id)
+                {
+                    exist = true;
+                }
+            }
+
+            MySqlConnection conn = null;
+            string myConnectionString = "server=scrumsquadserver.mysql.database.azure.com;uid=scrumuser@scrumsquadserver;" +
+            "pwd=scrumpass1!;database=scrumsquaddb";
+            //  var noteList = mongoDatabase.GetCollection("Locations");
+            try
+            {
+                if (exist == false)
+                {
+                    conn = new MySqlConnection(myConnectionString);
+                    conn.Open();
+                    MySqlCommand cmd = new MySqlCommand("INSERT INTO Locations (lat, lng) VALUES (@lat, @lng)", conn);
+                    MySqlParameter param = new MySqlParameter("@lat", newLocation.Lat);
+                    cmd.Parameters.Add(param);
+                    MySqlParameter param1 = new MySqlParameter("@lng", newLocation.Lng);
+                    cmd.Parameters.Add(param1);
+                    //get data stream
+                    cmd.ExecuteNonQuery();
+
+                }
+                else
+                {
+                    conn = new MySqlConnection(myConnectionString);
+                    conn.Open();
+                    MySqlCommand cmd = new MySqlCommand("UPDATE Locations SET lat = @lat, lng = @lng WHERE Locations.id = @LID", conn);
+                    MySqlParameter param = new MySqlParameter("@lat", newLocation.Lat);
+                    cmd.Parameters.Add(param);
+                    MySqlParameter param1 = new MySqlParameter("@lng", newLocation.Lng);
+                    cmd.Parameters.Add(param1);
+                    MySqlParameter param2 = new MySqlParameter("@LID", newLocation.Location_Id);
+                    cmd.Parameters.Add(param2);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                //Code in finally block executes in normal scenario as well as in case of exception thrown.
+                // close connection
+                if (conn != null)
+                {
+                    conn.Close();
+
+                }
+            }
+        }
+
     }
+
 }
