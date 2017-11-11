@@ -1,18 +1,5 @@
 const LOCATIONS_URI = "/api/location";
 
-function generateDefaultApiResponse(callback) {
-    return {
-        success: function (result) {
-            callback(null, result)
-        },
-        error: function (err) {
-            callback(err)
-        }
-    }
-}
-
-const defaultApiReponse = {};
-
 function getLocations(callback) {
     $.ajax({
         url: LOCATIONS_URI,

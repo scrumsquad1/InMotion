@@ -1,51 +1,38 @@
 const TASKS_URI = "/api/task";
 
-function generateDefaultApiResponse(callback) {
-    return {
-        success: function (result) {
-            callback(null, result)
-        },
-        error: function (err) {
-            callback(err)
-        }
-    }
-}
-
-const defaultApiReponse = {};
-
 function getTasks(callback) {
     $.ajax({
-        url: LISTS_URI,
+        url: TASKS_URI,
         type: 'GET',
         contentType: "application/json",
         ...generateDefaultApiResponse(callback)
     });
 }
 
-function addList(list, callback) {
-    console.log(note);
+function addList(task, callback) {
+    console.log(task);
     $.ajax({
-        url: LISTS_URI,
+        url: TASKS_URI,
         type: 'POST',
-        data: JSON.stringify(list),
+        data: JSON.stringify(task),
         contentType: "application/json",
         ...generateDefaultApiResponse(callback)
     });
 }
 
-function addEdit(list, callback) {
+function addEdit(task, callback) {
     $.ajax({
-        url: LISTS_URI,
+        url: TASKS_URI,
         type: 'POST',
-        data: JSON.stringify(list),
+        data: JSON.stringify(task),
         contentType: "application/json",
         ...generateDefaultApiResponse(callback)
     });
 }
 
-function deleteList(list, callback) {
+function deleteList(task, callback) {
     $.ajax({
-        url: LISTS_URI + '/' + list.List_Id,
+        url: TASKS_URI + '/' + task.Task_id,
         type: 'DELETE',
         ...generateDefaultApiResponse(callback)
     });

@@ -25,7 +25,7 @@ namespace inmotion.Controllers
 
             return Ok(location);
         }
-
+     
         public List<Location> GetLocationList()
         {
             MySqlConnection conn = null;

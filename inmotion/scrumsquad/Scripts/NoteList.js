@@ -5,7 +5,7 @@
     }
 
     fetchNotesFromServer(callback) {
-        apiGetNotes((err, result) => {
+        getNotes((err, result) => {
             if (!err) {
                 this.list = result;
                 this.onChange(this.list)

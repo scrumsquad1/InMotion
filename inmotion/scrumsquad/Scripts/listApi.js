@@ -1,18 +1,5 @@
 const LISTS_URI = "/api/list";
 
-function generateDefaultApiResponse(callback) {
-    return {
-        success: function (result) {
-            callback(null, result)
-        },
-        error: function (err) {
-            callback(err)
-        }
-    }
-}
-
-const defaultApiReponse = {};
-
 function getLists(callback) {
     $.ajax({
         url: LISTS_URI,
