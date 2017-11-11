@@ -1,55 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
-using scrumsquad.Models;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using MySql.Data.MySqlClient;
 using inmotion.Models;
+using MySql.Data.MySqlClient;
 
 namespace inmotion.Controllers
 {
-    public class LocationController : ApiController
+    public class ListController : ApiController
     {
         [HttpGet]
-        public IHttpActionResult GetLocation(int id)  // make sure its string
+        public IHttpActionResult GetList(int id)  // make sure its string
         {
-            List<Location> locationList = GetLocationList();
+            List<List> listOfLists = GetLists();
 
-            var location = locationList.FirstOrDefault((p) => p.Location_Id == id);
+            var list = listOfLists.FirstOrDefault((p) => p.List_Id == id);
 
-            if (location == null)
+            if (list == null)
                 return NotFound();
 
-            return Ok(location);
+            return Ok(list);
         }
-
-        public List<Location> GetLocationList()
+        
+        public List<List> GetLists()
         {
             MySqlConnection conn = null;
             string myConnectionString = "server=scrumsquadserver.mysql.database.azure.com;uid=scrumuser@scrumsquadserver;" +
             "pwd=scrumpass1!;database=scrumsquaddb";
 
-            List<Location> locationList = new List<Location>();
+            List<List> locationList = new List<List>();
 
             try
             {
                 conn = new MySqlConnection(myConnectionString);
                 conn.Open();
-                MySqlCommand cmd = new MySqlCommand("SELECT * FROM locations");
+                MySqlCommand cmd = new MySqlCommand("SELECT * FROM lists");
 
                 cmd.Connection = conn;
                 MySqlDataReader reader = cmd.ExecuteReader();
 
                 while (reader.Read())
                 {
-                    locationList.Add(new Location
+                    locationList.Add(new List
                     {
-                        Location_Id = reader.GetInt32(0),
-                        Lat = reader.GetDouble(1),
-                        Lng = reader.GetDouble(2)
+                        List_Id = reader.GetInt32(0),
+                        Name = reader.GetString(1),
+                        Location_Id = reader.GetInt32(2)
                     });
                 }
             }
@@ -71,50 +69,33 @@ namespace inmotion.Controllers
         }
 
         [HttpDelete]
-        public HttpResponseMessage DeleteLocation(List passedList)
+        public HttpResponseMessage DeleteList(List passedList)
         {
             bool found = true;
             MySqlConnection conn = null;
             string myConnectionString = "server=scrumsquadserver.mysql.database.azure.com;uid=scrumuser@scrumsquadserver;" +
             "pwd=scrumpass1!;database=scrumsquaddb";
 
-            int delId = passedList.Location_Id;
+            int delId = passedList.List_Id;
 
             try
             {
                 conn = new MySqlConnection(myConnectionString);
                 conn.Open();
-                MySqlCommand cmd = new MySqlCommand("DELETE FROM locations WHERE locations.id=@id", conn);
+                MySqlCommand cmd = new MySqlCommand("DELETE FROM lists WHERE lists.id=@id", conn);
                 MySqlParameter param = new MySqlParameter("@id", delId);
                 cmd.Parameters.Add(param);
                 //get data stream
+
                 int numRowsAffected = cmd.ExecuteNonQuery();
                 if (numRowsAffected < 1)
                 {
                     found = false;
                 }
-
-                //may not need these additional commands if the table structure allows for CASCADING deletes. List items should
-                // be deleted that have the same location id and tasks should be deleted that have the same list id as the list
-                //items that were deleted
-
-                //MySqlCommand cmd1 = new MySqlCommand("DELETE t FROM Tasks t INNER JOIN Lists l ON t.list_id = l.id " +
-                //"WHERE l.id=@id", conn);
-                //MySqlParameter param1 = new MySqlParameter("@id", delId);
-                //cmd1.Parameters.Add(param1);
-                ////get data stream
-                //cmd1.ExecuteNonQuery();
-
-                //MySqlCommand cmd2 = new MySqlCommand("DELETE FROM Lists WHERE Lists.Location_Id=@id", conn);
-                //MySqlParameter param2 = new MySqlParameter("@id", delId);
-                //cmd2.Parameters.Add(param2);
-                ////get data stream
-                //cmd2.ExecuteNonQuery();
-                ////Check whether record exists or not
             }
             catch (Exception ex)
             {
-                found = false;         
+                found = false;          
             }
             finally
             {
@@ -141,14 +122,14 @@ namespace inmotion.Controllers
         }
 
         [HttpPost]
-        public void SaveLocation(Location newLocation)
+        public void SaveList(List newList)
         {
             bool exist = false;
-            List<Location> locationList = GetLocationList();
+            List<List> listOfLists = GetLists();
 
-            for (var i = 0; i < locationList.Count; i++)
+            for (var i = 0; i < listOfLists.Count; i++)
             {
-                if (locationList[i].Location_Id == newLocation.Location_Id)
+                if (listOfLists[i].List_Id == newList.List_Id)
                 {
                     exist = true;
                 }
@@ -164,10 +145,10 @@ namespace inmotion.Controllers
                 {
                     conn = new MySqlConnection(myConnectionString);
                     conn.Open();
-                    MySqlCommand cmd = new MySqlCommand("INSERT INTO locations (lat, lng) VALUES (@lat, @lng)", conn);
-                    MySqlParameter param = new MySqlParameter("@lat", newLocation.Lat);
+                    MySqlCommand cmd = new MySqlCommand("INSERT INTO lists (name, location_id) VALUES (@name, @location_id)", conn);
+                    MySqlParameter param = new MySqlParameter("@name", newList.Name);
                     cmd.Parameters.Add(param);
-                    MySqlParameter param1 = new MySqlParameter("@lng", newLocation.Lng);
+                    MySqlParameter param1 = new MySqlParameter("@location_id", newList.Location_Id);
                     cmd.Parameters.Add(param1);
                     //get data stream
                     cmd.ExecuteNonQuery();
@@ -177,12 +158,12 @@ namespace inmotion.Controllers
                 {
                     conn = new MySqlConnection(myConnectionString);
                     conn.Open();
-                    MySqlCommand cmd = new MySqlCommand("UPDATE locations SET lat = @lat, lng = @lng WHERE locations.id = @LID", conn);
-                    MySqlParameter param = new MySqlParameter("@lat", newLocation.Lat);
+                    MySqlCommand cmd = new MySqlCommand("UPDATE lists SET name = @name, location_id = @location_id WHERE lists.id = @LID", conn);
+                    MySqlParameter param = new MySqlParameter("@name", newList.Name);
                     cmd.Parameters.Add(param);
-                    MySqlParameter param1 = new MySqlParameter("@lng", newLocation.Lng);
+                    MySqlParameter param1 = new MySqlParameter("@location_id", newList.Location_Id);
                     cmd.Parameters.Add(param1);
-                    MySqlParameter param2 = new MySqlParameter("@LID", newLocation.Location_Id);
+                    MySqlParameter param2 = new MySqlParameter("@LID", newList.List_Id);
                     cmd.Parameters.Add(param2);
                     cmd.ExecuteNonQuery();
                 }
@@ -203,6 +184,7 @@ namespace inmotion.Controllers
             }
         }
 
-    }
 
+
+    }
 }

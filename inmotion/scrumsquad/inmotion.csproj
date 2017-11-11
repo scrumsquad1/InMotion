@@ -118,15 +118,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Controllers\ItemController.cs" />
+    <Compile Include="Controllers\ListController.cs" />
     <Compile Include="Controllers\LocationController.cs" />
     <Compile Include="Controllers\NotesController.cs" />
+    <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\List.cs" />
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\Notes.cs" />
+    <Compile Include="Models\Task.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
