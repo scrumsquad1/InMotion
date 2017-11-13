@@ -24,12 +24,21 @@ const DEFAULT_STATE = {
 };
 
 function insertList(state, list) {
-    //TODO stub
+    state.lists.push(list);
     return state;
 }
 
 function deleteList(state, list) {
-    //TODO stub
+
+    for(var i = 0; i < state.lists.length; i++) {
+        var obj = state.lists[i];
+
+        if(obj.id === list.id) {
+            state.lists.splice(i, 1);
+           //i--;
+            break;
+        }
+    }
     return state;
 }
 

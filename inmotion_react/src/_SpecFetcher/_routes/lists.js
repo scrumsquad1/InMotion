@@ -1,6 +1,6 @@
 import fetcher from '../index.js'
 
-const path = '/api/lists';
+const path = '/api/list';
 
 export const GET_LISTS = (callback) => {
 
