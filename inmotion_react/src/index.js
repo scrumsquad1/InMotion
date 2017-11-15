@@ -13,29 +13,27 @@ import allReducers from './_redux/reducers'
 import Home from './components/Home';
 
 import action_PathChange from './_redux/actions/navigation/action_PathChange';
-import action_FetchLists from './_redux/actions/lists/action_FetchLists';
-import action_FetchLocations from './_redux/actions/locations/action_FetchLocations';
+import action_InsertList from './_redux/actions/lists/action_InsertList';
+import action_InsertTask from './_redux/actions/tasks/action_InsertTask';
+import List from './data/List';
+import Task from './data/Task';
 
-// Hello!
-let previousState;
 const middleware = applyMiddleware(
-    thunk, // See /src/_redux/lists/action_FetchLists for details on what 'thunk' is
+    thunk,
     createLogger({
-        collapsed: true, // Collapse the log in the console by default
-        diff: true, // Log the differences between the previous and the new state
-        predicate: (getState, action) => action.type.substr(0, 12) !== '@@redux-form' // Dont log to console the actions dispatched by redux-form because there are so many it can be spammy.
+        collapsed: true,
+        diff: true,
+        predicate: (getState, action) => action.type.substr(0, 12) !== '@@redux-form'
     }),
 );
 
-const store = createStore(allReducers, middleware); // Create the store redux will use. See /src/_redux/reducers/index.js
+const store = createStore(allReducers, middleware);
 
-// Configure manual control of router. For details see /src/_redux/actions/navigation/action_Navigation_PathChange.js
 const history = createBrowserHistory();
 history.listen((obj) => {
     store.dispatch(action_PathChange(obj.pathname))
 });
 
-// This is where we will redirect the user to a different page if state.navigation.redirectPath !== null. For details see /src/_redux/actions/navigation/action_Navigation_Redirect.js
 store.subscribe(() => {
     const redirectPath = store.getState().navigationStore.redirectPath;
     if (redirectPath) {
@@ -43,7 +41,6 @@ store.subscribe(() => {
     }
 });
 
-//Provider allows us to user 'connect' to access the stores from components See ./components/Map.js
 ReactDOM.render(
     <Provider store={store}>
         <Router history={history}>
@@ -58,12 +55,51 @@ ReactDOM.render(
 
 // Fetch data on start
 store.dispatch((dispatch) => {
-    dispatch(action_FetchLists());
-    dispatch(action_FetchLocations());
-});
 
-// console.log('Started');
-console.warn('FirstState');
-console.log(store.getState());
+    // dispatch(action_FetchLists());
+
+    const seattleList = new List({
+        lat: '47.6062',
+        lng: '-122.3321',
+        name: 'Seattle',
+    });
+    dispatch(action_InsertList(seattleList));
+
+    const bellevueList = new List({
+        lat: '47.6101',
+        lng: '-122.2015',
+        name: 'Bellevue',
+    });
+    dispatch(action_InsertList(bellevueList));
+
+    let seattleTask1 = new Task({
+        subject: 'Get Groceries',
+        list: seattleList,
+        priority: 0
+    });
+    dispatch(action_InsertTask(seattleTask1));
+
+    let seattleTask2 = new Task({
+        subject: 'Seahawks game',
+        list: seattleList,
+        priority: 0
+    });
+    dispatch(action_InsertTask(seattleTask2));
+
+    let bellevueTask1 = new Task({
+        subject: 'Bellevue Things',
+        list: bellevueList,
+        priority: 1
+    });
+    dispatch(action_InsertTask(bellevueTask1));
+
+    let bellevueTask2 = new Task({
+        subject: 'Bellevue Things 2',
+        list: bellevueList,
+        priority: 2
+    });
+    dispatch(action_InsertTask(bellevueTask2));
+
+});
 
 registerServiceWorker();

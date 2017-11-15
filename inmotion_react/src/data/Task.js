@@ -1,15 +1,10 @@
 export default class Task {
 
-    id;
-    list;
-    subject;
-    priority;
-
-    constructor(id, list, subject, priority) {
+    constructor({id, subject, priority, list}) {
         this.id = id;
-        this.list = list;
         this.subject = subject;
         this.priority = priority;
+        this.list = list;
     }
 
 }
