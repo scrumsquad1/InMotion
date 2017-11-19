@@ -14,7 +14,8 @@ namespace inmotion.Controllers
         [HttpGet]
         public IHttpActionResult GetList(int id)  // make sure its string
         {
-            List<List> listOfLists = GetLists();
+            //List<ListLoc> listOfLists = GetLists();
+            List<ListLoc> listOfLists = GetLists();
 
             var list = listOfLists.FirstOrDefault((p) => p.List_Id == id);
 
@@ -24,30 +25,32 @@ namespace inmotion.Controllers
             return Ok(list);
         }
         
-        public List<List> GetLists()
+        public List<ListLoc> GetLists()
         {
             MySqlConnection conn = null;
             string myConnectionString = "server=scrumsquadserver.mysql.database.azure.com;uid=scrumuser@scrumsquadserver;" +
             "pwd=scrumpass1!;database=scrumsquaddb";
-
-            List<List> locationList = new List<List>();
+           // List<List> locationList = new List<List>();
+            List<ListLoc> locationList = new List<ListLoc>();
 
             try
             {
                 conn = new MySqlConnection(myConnectionString);
                 conn.Open();
-                MySqlCommand cmd = new MySqlCommand("SELECT * FROM lists");
+                MySqlCommand cmd = new MySqlCommand("SELECT locations.id, locations.lat, locations.lng, lists.id, lists.name FROM lists INNER JOIN locations ON locations.id = lists.location_id");
 
                 cmd.Connection = conn;
                 MySqlDataReader reader = cmd.ExecuteReader();
 
                 while (reader.Read())
                 {
-                    locationList.Add(new List
+                    locationList.Add(new ListLoc
                     {
-                        List_Id = reader.GetInt32(0),
-                        Name = reader.GetString(1),
-                        Location_Id = reader.GetInt32(2)
+                        Location_Id = reader.GetInt32(0),
+                        Lat = reader.GetDouble(1),
+                        Lng = reader.GetDouble(2),
+                        List_Id = reader.GetInt32(3),
+                        Name = reader.GetString(4)
                     });
                 }
             }
@@ -125,7 +128,8 @@ namespace inmotion.Controllers
         public void SaveList(List newList)
         {
             bool exist = false;
-            List<List> listOfLists = GetLists();
+           // List<List> listOfLists = GetLists();
+            List<ListLoc> listOfLists = GetLists();
 
             for (var i = 0; i < listOfLists.Count; i++)
             {
