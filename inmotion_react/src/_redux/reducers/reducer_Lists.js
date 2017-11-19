@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import {TYPE_LISTS_FETCHLISTS_COMPLETE, TYPE_LISTS_FETCHLISTS_ERROR, TYPE_LISTS_FETCHLISTS_START} from '../actions/lists/action_FetchLists';
 import status from '../../_Resources/status'
+import {TYPE_LISTS_FETCHLISTS_COMPLETE, TYPE_LISTS_FETCHLISTS_ERROR, TYPE_LISTS_FETCHLISTS_START} from '../actions/lists/action_FetchLists';
 import {TYPE_LISTS_INSERTLIST_COMPLETE, TYPE_LISTS_INSERTLIST_ERROR, TYPE_LISTS_INSERTLIST_START} from '../actions/lists/action_InsertList';
 import {TYPE_LISTS_DELETELIST_COMPLETE, TYPE_LISTS_DELETELIST_ERROR, TYPE_LISTS_DELETELIST_START} from '../actions/lists/action_DeleteList';
 import {TYPE_TASKS_INSERTTASK_COMPLETE, TYPE_TASKS_INSERTTASK_ERROR, TYPE_TASKS_INSERTTASK_START} from '../actions/tasks/action_InsertTask';
@@ -20,41 +20,41 @@ const DEFAULT_STATE = {
     editTaskError: null,
     deleteTaskStatus: status.UNINITIALIZED,
     deleteTaskError: null,
-    lists: null
+    lists: []
 };
 
 function insertList(state, list) {
     state.lists.push(list);
-    return state;
 }
 
 function deleteList(state, list) {
-
-    for(var i = 0; i < state.lists.length; i++) {
-        var obj = state.lists[i];
-
-        if(obj.id === list.id) {
-            state.lists.splice(i, 1);
-           //i--;
-            break;
-        }
-    }
-    return state;
+    state.lists = state.lists.filter(l => l.id !== list.id);
 }
 
 function insertTask(state, task) {
-    //TODO stub
-    return state;
+    state.lists.forEach(l => {
+        if (task.list.id === l.id) {
+            l.tasks.push(task);
+        }
+    });
 }
 
 function editTask(state, task) {
-    //TODO stub
-    return state;
+    state.lists.forEach(l => {
+        if (task.list.id === l.id) {
+            l.tasks = l.tasks.map(t => t.id === task.id ? task : t);
+        }
+    });
 }
 
 function deleteTask(state, task) {
-    //TODO stub
-    return state;
+    state.lists.map(l => {
+        if (task.list.id === l.id) {
+            l.tasks = l.tasks.filter(t => {
+                return t.id !== task.id;
+            })
+        }
+    });
 }
 
 export default (previousState = DEFAULT_STATE, action) => {

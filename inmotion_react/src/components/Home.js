@@ -13,7 +13,6 @@ class Home extends Component {
                     containerElement={<div style={
                         {
                             position: 'absolute',
-                            top: '50px',
                             left: '0',
                             height: '95vh',
                             width: '100%'

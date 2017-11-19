@@ -4,6 +4,9 @@ export const TYPE_TASKS_INSERTTASK_START = 'type_tasks_inserttask_start';
 export const TYPE_TASKS_INSERTTASK_COMPLETE = 'type_tasks_inserttask_complete';
 export const TYPE_TASKS_INSERTTASK_ERROR = 'type_tasks_inserttask_error';
 
+//TODO
+let count = 0;
+
 export default (task) => (dispatch) => {
 
     if (task) {
@@ -17,6 +20,10 @@ export default (task) => (dispatch) => {
                 dispatch({type: TYPE_TASKS_INSERTTASK_COMPLETE, payload: result});
             }
         });
+
+        //TODO delete
+        task.id = count++;
+        dispatch({type: TYPE_TASKS_INSERTTASK_COMPLETE, payload: task});
 
     }
 

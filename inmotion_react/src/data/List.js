@@ -1,13 +1,11 @@
 export default class List {
 
-    id;
-    location;
-    tasks;
-
-    constructor(id, location, tasks) {
+    constructor({id, name, lat, lng}) {
         this.id = id;
-        this.location = location;
-        this.tasks = tasks;
+        this.name = name;
+        this.lat = lat;
+        this.lng = lng;
+        this.tasks = [];
     }
 
 }

@@ -1,103 +1,132 @@
 import React, {Component} from 'react';
-import {GoogleMap, Marker, OverlayView, withGoogleMap, withScriptjs} from 'react-google-maps';
+import {GoogleMap, OverlayView, withGoogleMap, withScriptjs} from 'react-google-maps';
 import {connect} from 'react-redux'
-//import fakeJoin from '../_Resources/dummyList';
-import TodoList from './TodoList';
-import InfoBox from 'react-google-maps/lib/components/addons/InfoBox';
-import request from 'superagent';
+import OverlayPanelList from './OverlayPanelMenu';
+import OverlayPanelListElement from './OverlayPanelListElement';
+import action_ShowMenu from '../_redux/actions/maps/action_ShowMenu';
+import action_SetMenuLocation from '../_redux/actions/maps/action_SetMenuLocation';
+import MainMenu from './menus/MainMenu';
+import NewListOverlay from './menus/NewListOverlay';
+import action_SetListState from '../_redux/actions/maps/action_SetListState';
+import Task from '../data/Task';
+import action_InsertTask from '../_redux/actions/tasks/action_InsertTask';
 
-/**
- * How we use redux in a Component
- * For an example of dispatching an action, see ./TodoList.js
- */
+class Map extends Component {
 
-class Map extends Component { // Create a normal component
-    constructor(props){
-        super(props)
-
-        this.defaultCenter={lat: 47.585224, lng: -122.148861};
-        this.state ={
-
-            pos: {
-                lat: 0,
-                lng: 0,
-            },
-            lat: 0,
-            lng: 0,
-            text: ''
-        }
+    onRightClick(event) {
+        this.props.dispatch(action_SetMenuLocation({
+            lat: event.latLng.lat(),
+            lng: event.latLng.lng()
+        }));
+        this.props.dispatch(action_ShowMenu('main'));
     }
 
-    addMarker =(location, map) =>{
-        return
-        <Marker position={this.defaultCenter}> </Marker>
-
-    } // let us test that it displays at least.
-    onMapClick =(e) => {
-        // debugger;
-        const lat = e.latLng.lat();
-        const lng = e.latLng.lng();
-        request.get(`http://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&sensor=true`).end((err, res) => {
-            let pos = {
-                lat: lat,
-                lng: lng
+    generateMenuOverlays() {
+        let inner = null;
+        switch (this.props.mapStore.visibleMenu) {
+            case 'main': {
+                inner = <MainMenu/>;
+                break;
             }
-            this.setState({lat: lat, lng: lng, text: `The Lat is ${lat} and Long is ${lng} \n  Address is ${res.body.results[0].formatted_address}`});
-            //debugger;
-        })
+            case 'newList': {
+                inner = <NewListOverlay/>;
+                break;
+            }
+            default:
+                return;
+        }
+        return <OverlayView
+            position={this.props.mapStore.menuLocation}
+            mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}>
+            {inner}
+        </OverlayView>
+    }
+
+    generateListOverlays() {
+
+        let that = this;
+        return this.props.listsStore.lists.map(list => {
+
+                const listState = this.props.mapStore.listStates[list.id];
+
+                function generateListFooter() {
+                    switch (listState) {
+                        case 'visible': {
+
+                            const onAddClick = () => {
+                                that.props.dispatch(action_SetListState({id: list.id, state: 'add'}));
+                            };
+
+                            return <button className="btn btn-primary form-control" onClick={onAddClick}>Add Item</button>;
+
+                        }
+                        case 'add': {
+
+                            const uniqueInputRef = `list_add_${list.id}`;
+
+                            const onAddClick = () => {
+                                const input = that.refs[uniqueInputRef];
+                                that.props.dispatch(action_InsertTask(new Task({list, subject: input.value})));
+                                that.props.dispatch(action_SetListState({id: list.id, state: 'visible'}));
+                                input.value = '';
+                            };
+
+                            const onCancelClick = () => {
+                                that.props.dispatch(action_SetListState({id: list.id, state: 'visible'}));
+                            };
+
+                            return (
+                                <div>
+                                    <input className="form-control" placeholder="name" ref={uniqueInputRef}/>
+                                    <button className="form-control btn btn-warning" onClick={onAddClick}>Add</button>
+                                    <button className="form-control btn btn-primary" onClick={onCancelClick}>Cancel</button>
+                                </div>
+                            );
+
+                        }
+                        default: {
+                            break;
+                        }
+                    }
+                }
+
+                return <OverlayView
+                    key={list.id}
+                    position={{lat: list.lat, lng: list.lng}}
+                    mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+                    filterClick={this}>
+                    <OverlayPanelList
+                        name={list.name}>
+                        {list.tasks.map(task =>
+                            <OverlayPanelListElement
+                                key={task.id}
+                                name={task.subject}
+                            />
+                        )}
+                        {generateListFooter()}
+                    </OverlayPanelList>
+                </OverlayView>
+
+            }
+        );
     }
 
     render() {
         return (
-            <GoogleMap defaultZoom={16} defaultCenter={this.defaultCenter} onClick= {this.onMapClick}>
-
-                <InfoBox
-                    defaultPosition={new window.google.maps.LatLng(this.defaultCenter)}
-                    position={ new window.google.maps.LatLng({lat: this.state.lat || this.defaultCenter.lat,
-                        lng: this.state.lng || this.defaultCenter.lng}) }
-
-
-                    options={{ closeBoxURL: ``, enableEventPropagation: true }}
-                >
-                    <div style={{ width: `150px`, height: `100px`, backgroundColor: `gray`, opacity: 0.75, padding: `12px` }}>
-                        <div style={{ fontSize: `16px`, fontColor: `#08233B` }}>
-                            {this.state.text}
-                        </div>
-                    </div>
-                </InfoBox>
-                <Marker position={ {lat: this.state.lat, lng: this.state.lng} }/>
+            <GoogleMap
+                defaultZoom={16}
+                defaultCenter={{lat: 47.585224, lng: -122.148861}}
+                onRightClick={this.onRightClick.bind(this)}
+            >
+                {this.generateListOverlays()}
+                {this.generateMenuOverlays()}
             </GoogleMap>
         )
     }
 
 }
-// I need to test something
 
-const mapStateToProps = (state) => {
-    return {
-        mapPoints: state.mapPoints
-    }
-}
 
-//   const mapDispatchToProps = (dispatch) => {
-//     return {
-//         onMapClick: (center) => {
-//         dispatch(onMapClick(center))
-//       }
-//     }
-//   }
-function assignStateToProps(state) { // State is referring to the massive json file I was talking about that controls the whole project
+let wrappedMap = withScriptjs(withGoogleMap(Map));
 
-    // We will return an object with what stores we want to use like this:
-    return {
-        mapsStore: state.mapsStore, // Can now be accessed in the component with this.props.mapsStore
-        listsStore: state.listsStore, // Can now be accessed in the component with this.props.listsStore
-        locationsStore: state.locationsStore // Can now be accessed in the component with this.props.locationsStore
-    }
-
-}
-
-let wrappedMap = withScriptjs(withGoogleMap(Map)); // This is needed for GoogleMaps and is not standard, ignore.
-
-// Finally we use connect!
-export default connect(mapStateToProps)(withScriptjs(withGoogleMap(Map)));
+export default connect(({listsStore, mapStore}) => ({listsStore, mapStore}))(wrappedMap);
