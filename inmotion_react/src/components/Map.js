@@ -10,6 +10,7 @@ import NewListOverlay from './menus/NewListOverlay';
 import action_SetListState from '../_redux/actions/maps/action_SetListState';
 import Task from '../data/Task';
 import action_InsertTask from '../_redux/actions/tasks/action_InsertTask';
+import action_EditTask from '../_redux/actions/tasks/action_EditTask';
 
 class Map extends Component {
 
@@ -49,41 +50,74 @@ class Map extends Component {
 
                 const listState = this.props.mapStore.listStates[list.id];
 
-                function generateListFooter() {
-                    switch (listState) {
-                        case 'visible': {
+            function generateListFooter() {
+                switch (listState) {
+                    case 'visible': {
 
-                            const onAddClick = () => {
-                                that.props.dispatch(action_SetListState({id: list.id, state: 'add'}));
-                            };
+                        const onAddClick = () => {
+                            that.props.dispatch(action_SetListState({id: list.id, state: 'add'}));
+                        };
+                        const onUpdateClick = () => {
+                            that.props.dispatch(action_SetListState({id: list.id, state: 'update'}));
+                        };
 
-                            return <button className="btn btn-primary form-control" onClick={onAddClick}>Add Item</button>;
+                        return (
+                            <div>
+                                <button className="btn btn-primary form-control" onClick={onAddClick}>Add Item</button>
 
-                        }
-                        case 'add': {
+                                <button className="btn btn-primary form-control" onClick={onUpdateClick}>Update List</button>
+                            </div>
+                        )
 
-                            const uniqueInputRef = `list_add_${list.id}`;
+                    }
+                    case 'add': {
 
-                            const onAddClick = () => {
-                                const input = that.refs[uniqueInputRef];
-                                that.props.dispatch(action_InsertTask(new Task({list, subject: input.value})));
-                                that.props.dispatch(action_SetListState({id: list.id, state: 'visible'}));
-                                input.value = '';
-                            };
+                        const uniqueInputRef = `list_add_${list.id}`;
 
-                            const onCancelClick = () => {
-                                that.props.dispatch(action_SetListState({id: list.id, state: 'visible'}));
-                            };
+                        const onAddClick = () => {
+                            const input = that.refs[uniqueInputRef];
+                            that.props.dispatch(action_InsertTask(new Task({list, subject: input.value})));
+                            that.props.dispatch(action_SetListState({id: list.id, state: 'visible'}));
+                            input.value = '';
+                        };
 
-                            return (
-                                <div>
-                                    <input className="form-control" placeholder="name" ref={uniqueInputRef}/>
-                                    <button className="form-control btn btn-warning" onClick={onAddClick}>Add</button>
-                                    <button className="form-control btn btn-primary" onClick={onCancelClick}>Cancel</button>
-                                </div>
-                            );
+                        const onCancelClick = () => {
+                            that.props.dispatch(action_SetListState({id: list.id, state: 'visible'}));
+                        };
 
-                        }
+                        return (
+                            <div>
+                                <input className="form-control" placeholder="name" ref={uniqueInputRef}/>
+                                <button className="form-control btn btn-warning" onClick={onAddClick}>Add</button>
+                                <button className="form-control btn btn-primary" onClick={onCancelClick}>Cancel</button>
+                            </div>
+                        );
+
+                    }
+                    case 'update': {
+
+                        const uniqueInputRef = `list_add_${list.id}`;
+
+                        const onUpdateClick = () => {
+                            const input = that.refs[uniqueInputRef];
+                            that.props.dispatch(action_EditTask(new Task({list, subject: input.value})));
+                            that.props.dispatch(action_SetListState({id: list.id, state: 'visible'}));
+                            input.value = '';
+                        };
+
+                        const onCancelClick = () => {
+                            that.props.dispatch(action_EditTask({id: list.id, state: 'visible'}));
+                        };
+
+                        return (
+                            <div>
+                                <input className="form-control" placeholder="name" ref={uniqueInputRef}/>
+                                <button className="form-control btn btn-primary" onClick={onCancelClick}>Cancel</button>
+                                <button className="form-control btn btn-success" onClick={onUpdateClick}>update</button>
+                            </div>
+                        );
+
+                    }
                         default: {
                             break;
                         }
