@@ -4,6 +4,11 @@ const path = '/api/location';
 
 export const GET_LOCATIONS = (callback) => {
 
+    fetcher.get({
+        path,
+        callback
+    })
+
 };
 
 export const INSERT_LOCATION = (location, callback) => {

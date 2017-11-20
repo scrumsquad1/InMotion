@@ -12,11 +12,14 @@ import {createBrowserHistory} from 'history';
 import allReducers from './_redux/reducers'
 import Home from './components/Home';
 
+import action_InitialLoad from "./_redux/actions/action_InitialLoad";
+
 import action_PathChange from './_redux/actions/navigation/action_PathChange';
 import action_InsertList from './_redux/actions/lists/action_InsertList';
 import action_InsertTask from './_redux/actions/tasks/action_InsertTask';
 import List from './data/List';
 import Task from './data/Task';
+
 
 const middleware = applyMiddleware(
     thunk,
@@ -56,7 +59,7 @@ ReactDOM.render(
 // Fetch data on start
 store.dispatch((dispatch) => {
 
-    // dispatch(action_FetchLists());
+    dispatch(action_InitialLoad());
 
     const seattleList = new List({
         lat: '47.6062',

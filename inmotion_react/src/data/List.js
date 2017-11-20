@@ -1,10 +1,9 @@
 export default class List {
 
-    constructor({id, name, lat, lng}) {
+    constructor({id, name, location}) {
         this.id = id;
         this.name = name;
-        this.lat = lat;
-        this.lng = lng;
+        this.location = location;
         this.tasks = [];
     }
 

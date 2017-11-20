@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import status from '../../_Resources/status'
-import {TYPE_LISTS_FETCHLISTS_COMPLETE, TYPE_LISTS_FETCHLISTS_ERROR, TYPE_LISTS_FETCHLISTS_START} from '../actions/lists/action_FetchLists';
+import {TYPE_LISTS_FETCHLISTS_COMPLETE, TYPE_LISTS_FETCHLISTS_ERROR, TYPE_LISTS_FETCHLISTS_START} from '../actions/action_InitialLoad';
 import {TYPE_LISTS_INSERTLIST_COMPLETE, TYPE_LISTS_INSERTLIST_ERROR, TYPE_LISTS_INSERTLIST_START} from '../actions/lists/action_InsertList';
 import {TYPE_LISTS_DELETELIST_COMPLETE, TYPE_LISTS_DELETELIST_ERROR, TYPE_LISTS_DELETELIST_START} from '../actions/lists/action_DeleteList';
 import {TYPE_TASKS_INSERTTASK_COMPLETE, TYPE_TASKS_INSERTTASK_ERROR, TYPE_TASKS_INSERTTASK_START} from '../actions/tasks/action_InsertTask';
