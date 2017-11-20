@@ -7,8 +7,13 @@ namespace inmotion.Models
 {
     public class Task
     {
-        public int Task_id { get; set; }
-        public string Subject { get; set; }
-        public int List_id { get; set; }
+        public int id { get; set; }
+
+        public int list_id { get; set; }
+
+        public string subject { get; set; }
+        
+        public int priority { get; set; }
+
     }
 }

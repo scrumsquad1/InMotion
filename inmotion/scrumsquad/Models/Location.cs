@@ -7,8 +7,9 @@ namespace inmotion.Models
 {
     public class Location
     {
-        public int Location_Id { get; set; }      
-        public double Lat { get; set; }
-        public double Lng { get; set; }
+        public int id { get; set; }      
+        public double lat { get; set; }
+        public double lng { get; set; }
+
     }
 }

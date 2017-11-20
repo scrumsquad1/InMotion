@@ -1,6 +1,6 @@
 import fetcher from '../index.js'
 
-const path = '/api/tasks';
+const path = '/api/task';
 
 export const INSERT_TASK = (task, callback) => {
 

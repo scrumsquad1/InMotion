@@ -8,10 +8,12 @@ export default () => (dispatch) => {
 
     dispatch({type: TYPE_LISTS_FETCHLISTS_START});
     GET_LISTS((err, result) => {
+        console.log("HELLO");
+        console.log(err, result);
         if (!err) {
-            dispatch({type: TYPE_LISTS_FETCHLISTS_COMPLETE, payload: result});
+            // dispatch({type: TYPE_LISTS_FETCHLISTS_COMPLETE, payload: result});
         } else {
-            dispatch({type: TYPE_LISTS_FETCHLISTS_ERROR, payload: err});
+            // dispatch({type: TYPE_LISTS_FETCHLISTS_ERROR, payload: err});
         }
     });
 

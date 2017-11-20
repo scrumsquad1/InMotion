@@ -22,7 +22,7 @@
     "superagent": "^3.8.1",
     "url-assembler": "^1.2.8"
   },
-  "proxy": "http://localhost:3000/",
+  "proxy": "http://localhost:27622/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

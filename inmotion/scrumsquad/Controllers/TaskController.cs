@@ -14,164 +14,74 @@ namespace inmotion.Controllers
 
         public List<Task> GetTasks()
         {
-            MySqlConnection conn = null;
-            string myConnectionString = "server=scrumsquadserver.mysql.database.azure.com;uid=scrumuser@scrumsquadserver;" +
-            "pwd=scrumpass1!;database=scrumsquaddb";
-
             List<Task> taskList = new List<Task>();
-
-            try
-            {
-                conn = new MySqlConnection(myConnectionString);
-                conn.Open();
-                MySqlCommand cmd = new MySqlCommand("SELECT * FROM tasks");
-
-                cmd.Connection = conn;
-                MySqlDataReader reader = cmd.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    taskList.Add(new Task
-                    {
-                        Task_id = reader.GetInt32(0),
-                        Subject = reader.GetString(1),
-                        List_id = reader.GetInt32(2)
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                //Code in finally block executes in normal scenario as well as in case of exception thrown.
-                // close connection
-                if (conn != null)
-                {
-                    conn.Close();
-
-                }
-            }
+            new BasicQuery(new MySqlCommand("SELECT * FROM tasks"), (reader) =>
+             {
+                 taskList.Add(new Task
+                 {
+                     id = reader.GetInt32(0),
+                     subject = reader.GetString(1),
+                     list_id = reader.GetInt32(2)
+                 });
+             });
             return taskList;
         }
 
         [HttpDelete]
         public HttpResponseMessage DeleteTask(Task passedTask)
         {
-            bool found = true;
-            MySqlConnection conn = null;
-            string myConnectionString = "server=scrumsquadserver.mysql.database.azure.com;uid=scrumuser@scrumsquadserver;" +
-            "pwd=scrumpass1!;database=scrumsquaddb";
+            bool found = false;
+            MySqlCommand cmd = new MySqlCommand("DELETE FROM tasks WHERE tasks.id=@id");
+            cmd.Parameters.Add(new MySqlParameter("@id", passedTask.id));
 
-            int delId = passedTask.Task_id;
-
-            try
+            new BasicNonQuery(cmd, (rowsAffected) =>
             {
-                conn = new MySqlConnection(myConnectionString);
-                conn.Open();
-                MySqlCommand cmd = new MySqlCommand("DELETE FROM tasks WHERE tasks.id=@id", conn);
-                MySqlParameter param = new MySqlParameter("@id", delId);
-                cmd.Parameters.Add(param);
-                //get data stream
+                found = rowsAffected >= 1;
+            });
 
-                int numRowsAffected = cmd.ExecuteNonQuery();
-                if (numRowsAffected < 1)
-                {
-                    found = false; 
-                }            
-
-            }
-
-            catch (Exception ex)
-            {
-                found = false;               
-            }
-            finally
-            {
-                //Code in finally block executes in normal scenario as well as in case of exception thrown.
-                // close connection
-                if (conn != null)
-                {
-                    conn.Close();
-
-                }
-            }
             if (!found)
-            {
-                HttpResponseMessage badResponse = new HttpResponseMessage();
-                badResponse.StatusCode = HttpStatusCode.BadRequest;
-                return badResponse;
-            }
+               return new HttpResponseMessage(HttpStatusCode.BadRequest);
             else
-            {
-                HttpResponseMessage goodResponse = new HttpResponseMessage();
-                goodResponse.StatusCode = HttpStatusCode.OK;
-                return goodResponse;
-            }
+               return new HttpResponseMessage(HttpStatusCode.OK);
+
         }
 
         [HttpPost]
-        public void SaveTask(Task newTask)
+        public HttpResponseMessage SaveTask(Task newTask)
         {
-            bool exist = false;
-            List<Task> listOfTasks = GetTasks();
-
-            for (var i = 0; i < listOfTasks.Count; i++)
+            bool found = false;
+            GetTasks().ForEach(t =>
             {
-                if (listOfTasks[i].Task_id == newTask.Task_id)
-                {
-                    exist = true;
-                }
+                if (t.id == newTask.id)
+                    found = true;
+            });
+
+            MySqlCommand cmd;
+            if(!found)
+            {
+                cmd = new MySqlCommand("INSERT INTO tasks (subject, list_id) VALUES (@subject, @list_id)");
+                cmd.Parameters.Add(new MySqlParameter("@subject", newTask.subject));
+                cmd.Parameters.Add(new MySqlParameter("@list_id", newTask.list_id));
+            } else
+            {
+                cmd = new MySqlCommand("UPDATE tasks SET subject = @subject, list_id = @list_id WHERE tasks.id = @TID");
+                cmd.Parameters.Add(new MySqlParameter("@subject", newTask.subject));
+                cmd.Parameters.Add(new MySqlParameter("@list_id", newTask.list_id));
+                cmd.Parameters.Add(new MySqlParameter("@TID", newTask.id));
             }
 
-            MySqlConnection conn = null;
-            string myConnectionString = "server=scrumsquadserver.mysql.database.azure.com;uid=scrumuser@scrumsquadserver;" +
-            "pwd=scrumpass1!;database=scrumsquaddb";
-            //  var noteList = mongoDatabase.GetCollection("Locations");
-            try
+            bool applied = false;
+            new BasicNonQuery(cmd, rowsAffected =>
             {
-                if (exist == false)
-                {
-                    conn = new MySqlConnection(myConnectionString);
-                    conn.Open();
-                    MySqlCommand cmd = new MySqlCommand("INSERT INTO tasks (subject, list_id) VALUES (@subject, @list_id)", conn);
-                    MySqlParameter param = new MySqlParameter("@subject", newTask.Subject);
-                    cmd.Parameters.Add(param);
-                    MySqlParameter param1 = new MySqlParameter("@list_id", newTask.List_id);
-                    cmd.Parameters.Add(param1);
-                    //get data stream
-                    cmd.ExecuteNonQuery();
+                applied = rowsAffected >= 1;
+            });
 
-                }
-                else
-                {
-                    conn = new MySqlConnection(myConnectionString);
-                    conn.Open();
-                    MySqlCommand cmd = new MySqlCommand("UPDATE tasks SET subject = @subject, list_id = @list_id WHERE tasks.id = @TID", conn);
-                    MySqlParameter param = new MySqlParameter("@subject", newTask.Subject);
-                    cmd.Parameters.Add(param);
-                    MySqlParameter param1 = new MySqlParameter("@list_id", newTask.List_id);
-                    cmd.Parameters.Add(param1);
-                    MySqlParameter param2 = new MySqlParameter("@TID", newTask.Task_id);
-                    cmd.Parameters.Add(param2);
-                    cmd.ExecuteNonQuery();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                //Code in finally block executes in normal scenario as well as in case of exception thrown.
-                // close connection
-                if (conn != null)
-                {
-                    conn.Close();
+            if (!applied)
+                return new HttpResponseMessage(HttpStatusCode.BadRequest);
+            else
+                return new HttpResponseMessage(HttpStatusCode.OK);
 
-                }
-            }
         }
+
     }
 }

@@ -1,6 +1,6 @@
 import fetcher from '../index.js'
 
-const path = '/api/locations';
+const path = '/api/location';
 
 export const GET_LOCATIONS = (callback) => {
 
