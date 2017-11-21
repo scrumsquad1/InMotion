@@ -60,15 +60,8 @@ class Map extends Component {
                                     that.props.dispatch(action_SetListState({id: list.id, state: 'add'}));
                                 };
 
-                                const onDeleteClick = () => {
-                                    that.props.dispatch(action_SetListState({id: list.id, state: 'delete'}));
-                                };
+                                return <button className="btn btn-primary form-control" onClick={onAddClick}>Add Item</button>
 
-                                return (<div>
-                                        <button className="btn btn-primary form-control" onClick={onAddClick}>Add Item</button>
-                                        <button className="btn btn-warning form-control" onClick={onDeleteClick}>Delete List</button>
-                                    </div>
-                                );
                             }
                             case 'add': {
 
@@ -95,16 +88,6 @@ class Map extends Component {
 
                             }
 
-                            case 'delete': {
-                                that.props.dispatch(action_DeleteLocation(list.location));
-
-                                return (
-                                    <div>
-                                        <p>delete called</p>
-                                    </div>
-                                );
-
-                            }
                             default: {
                                 break;
                             }
