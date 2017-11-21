@@ -63,7 +63,7 @@ namespace inmotion.Controllers
         }
 
         [HttpPost]
-        public HttpResponseMessage SaveLocation(Location newLocation)
+        public IHttpActionResult SaveLocation(Location newLocation)
         {
             bool found = false;
             GetLocationList().ForEach(l =>
@@ -73,29 +73,33 @@ namespace inmotion.Controllers
             });
 
             MySqlCommand cmd;
-            if(!found)
+            bool applied = false;
+            if (!found)
             {
                 cmd = new MySqlCommand("INSERT INTO locations (lat, lng) VALUES (@lat, @lng)");
                 cmd.Parameters.Add(new MySqlParameter("@lat", newLocation.lat));
                 cmd.Parameters.Add(new MySqlParameter("@lng", newLocation.lng));
+                new BasicQueryForID(cmd, id =>
+                {
+                    newLocation.id = id;
+                    applied = true;
+                });
             } else
             {
                 cmd = new MySqlCommand("UPDATE locations SET lat = @lat, lng = @lng WHERE locations.id = @LID");
                 cmd.Parameters.Add(new MySqlParameter("@lat", newLocation.lat));
                 cmd.Parameters.Add(new MySqlParameter("@lng", newLocation.lng));
                 cmd.Parameters.Add(new MySqlParameter("@LID", newLocation.id));
+                new BasicNonQuery(cmd, rowsAffected =>
+                {
+                    applied = rowsAffected >= 1;
+                });
             }
 
-            bool applied = false;
-            new BasicNonQuery(cmd, rowsAffected =>
-            {
-                applied = rowsAffected >= 1;
-            });
-
             if (!applied)
-                return new HttpResponseMessage(HttpStatusCode.BadRequest);
+                return InternalServerError();
             else
-                return new HttpResponseMessage(HttpStatusCode.OK);
+                return Ok(newLocation);
 
         }
 

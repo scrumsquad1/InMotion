@@ -119,6 +119,7 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="BasicNonQuery.cs" />
+    <Compile Include="BasicQueryForID.cs" />
     <Compile Include="BasicQuery.cs" />
     <Compile Include="Controllers\ListController.cs" />
     <Compile Include="Controllers\LocationController.cs" />

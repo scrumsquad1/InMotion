@@ -13,6 +13,12 @@ export const GET_TASKS = (callback) => {
 
 export const INSERT_TASK = (task, callback) => {
 
+    fetcher.post({
+        path,
+        data: task.toServerJSON(),
+        callback
+    });
+
 };
 
 export const DELETE_TASK = (task, callback) => {

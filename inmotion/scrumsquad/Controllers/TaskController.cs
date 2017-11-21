@@ -47,7 +47,7 @@ namespace inmotion.Controllers
         }
 
         [HttpPost]
-        public HttpResponseMessage SaveTask(Task newTask)
+        public IHttpActionResult SaveTask(Task newTask)
         {
             bool found = false;
             GetTasks().ForEach(t =>
@@ -57,29 +57,35 @@ namespace inmotion.Controllers
             });
 
             MySqlCommand cmd;
-            if(!found)
+            bool applied = false;
+            if (!found)
             {
                 cmd = new MySqlCommand("INSERT INTO tasks (subject, list_id) VALUES (@subject, @list_id)");
                 cmd.Parameters.Add(new MySqlParameter("@subject", newTask.subject));
                 cmd.Parameters.Add(new MySqlParameter("@list_id", newTask.list_id));
+                new BasicQueryForID(cmd, id =>
+                {
+                    newTask.id = id;
+                });
+                applied = true;
             } else
             {
                 cmd = new MySqlCommand("UPDATE tasks SET subject = @subject, list_id = @list_id WHERE tasks.id = @TID");
                 cmd.Parameters.Add(new MySqlParameter("@subject", newTask.subject));
                 cmd.Parameters.Add(new MySqlParameter("@list_id", newTask.list_id));
                 cmd.Parameters.Add(new MySqlParameter("@TID", newTask.id));
+                new BasicNonQuery(cmd, rowsAffected =>
+                {
+                    applied = rowsAffected >= 1;
+                });
             }
 
-            bool applied = false;
-            new BasicNonQuery(cmd, rowsAffected =>
-            {
-                applied = rowsAffected >= 1;
-            });
 
             if (!applied)
-                return new HttpResponseMessage(HttpStatusCode.BadRequest);
+                return InternalServerError();
             else
-                return new HttpResponseMessage(HttpStatusCode.OK);
+                return Ok(newTask);
+
 
         }
 

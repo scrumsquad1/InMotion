@@ -2,12 +2,20 @@ export default class Location {
 
     id;
     lat;
-    long;
+    lng;
 
-    constructor({id, lat, long}) {
+    constructor({id, lat, lng}) {
         this.id = id;
         this.lat = lat;
-        this.long = long;
+        this.lng = lng;
+    }
+
+    toServerJSON() {
+        return JSON.stringify({
+            id: this.id,
+            lat: this.lat,
+            lng: this.lng
+        });
     }
 
 }

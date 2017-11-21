@@ -18,18 +18,17 @@ const DEFAULT_VALUES = {
 };
 
 function insertLocation(state, location) {
-    //TODO stub
-    return state;
+    state.locations[location.id] = location;
 }
 
 function editLocation(state, location) {
-    //TODO stub
-    return state;
+    state.locations = state.locations.map(l => {
+        l.location = l.location.id === location.id ? location : l.location;
+    });
 }
 
 function deleteLocation(state, location) {
-    //TODO stub
-    return state;
+    state.locations = state.locations.filter(l => l.id !== location.id);
 }
 
 /**

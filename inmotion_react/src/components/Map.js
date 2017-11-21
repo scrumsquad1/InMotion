@@ -47,65 +47,70 @@ class Map extends Component {
         let that = this;
         return this.props.listsStore.lists.map(list => {
 
-                const listState = this.props.mapStore.listStates[list.id];
+                if (list) {
 
-                function generateListFooter() {
-                    switch (listState) {
-                        case 'visible': {
+                    const listState = this.props.mapStore.listStates[list.id];
 
-                            const onAddClick = () => {
-                                that.props.dispatch(action_SetListState({id: list.id, state: 'add'}));
-                            };
+                    function generateListFooter() {
+                        switch (listState) {
+                            case 'visible': {
 
-                            return <button className="btn btn-primary form-control" onClick={onAddClick}>Add Item</button>;
+                                const onAddClick = () => {
+                                    that.props.dispatch(action_SetListState({id: list.id, state: 'add'}));
+                                };
 
+                                return <button className="btn btn-primary form-control" onClick={onAddClick}>Add Item</button>;
+
+                            }
+                            case 'add': {
+
+                                const uniqueInputRef = `list_add_${list.id}`;
+
+                                const onAddClick = () => {
+                                    const input = that.refs[uniqueInputRef];
+                                    that.props.dispatch(action_InsertTask(new Task({list, subject: input.value})));
+                                    that.props.dispatch(action_SetListState({id: list.id, state: 'visible'}));
+                                    input.value = '';
+                                };
+
+                                const onCancelClick = () => {
+                                    that.props.dispatch(action_SetListState({id: list.id, state: 'visible'}));
+                                };
+
+                                return (
+                                    <div>
+                                        <input className="form-control" placeholder="name" ref={uniqueInputRef}/>
+                                        <button className="form-control btn btn-warning" onClick={onAddClick}>Add</button>
+                                        <button className="form-control btn btn-primary" onClick={onCancelClick}>Cancel</button>
+                                    </div>
+                                );
+
+                            }
+                            default: {
+                                break;
+                            }
                         }
-                        case 'add': {
 
-                            const uniqueInputRef = `list_add_${list.id}`;
-
-                            const onAddClick = () => {
-                                const input = that.refs[uniqueInputRef];
-                                that.props.dispatch(action_InsertTask(new Task({list, subject: input.value})));
-                                that.props.dispatch(action_SetListState({id: list.id, state: 'visible'}));
-                                input.value = '';
-                            };
-
-                            const onCancelClick = () => {
-                                that.props.dispatch(action_SetListState({id: list.id, state: 'visible'}));
-                            };
-
-                            return (
-                                <div>
-                                    <input className="form-control" placeholder="name" ref={uniqueInputRef}/>
-                                    <button className="form-control btn btn-warning" onClick={onAddClick}>Add</button>
-                                    <button className="form-control btn btn-primary" onClick={onCancelClick}>Cancel</button>
-                                </div>
-                            );
-
-                        }
-                        default: {
-                            break;
-                        }
                     }
-                }
 
-                return <OverlayView
-                    key={list.id}
-                    position={{lat: list.lat, lng: list.lng}}
-                    mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-                    filterClick={this}>
-                    <OverlayPanelList
-                        name={list.name}>
-                        {list.tasks.map(task =>
-                            <OverlayPanelListElement
-                                key={task.id}
-                                name={task.subject}
-                            />
-                        )}
-                        {generateListFooter()}
-                    </OverlayPanelList>
-                </OverlayView>
+                    return <OverlayView
+                        key={list.id}
+                        position={{lat: list.location.lat, lng: list.location.lng}}
+                        mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+                        filterClick={this}>
+                        <OverlayPanelList
+                            name={list.name}>
+                            {list.tasks.map(task =>
+                                <OverlayPanelListElement
+                                    key={task.id}
+                                    name={task.subject}
+                                />
+                            )}
+                            {generateListFooter()}
+                        </OverlayPanelList>
+                    </OverlayView>
+
+                }
 
             }
         );

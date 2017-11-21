@@ -23,7 +23,13 @@ export const GET_LIST_BY_TASK = (callback) => {
 
 };
 
-export const INSERT_LIST = ({email, password, rawPassword, firstname, lastname}, callback) => {
+export const INSERT_LIST = (list, callback) => {
+
+    fetcher.post({
+        path,
+        data: list.toServerJSON(),
+        callback
+    });
 
 };
 

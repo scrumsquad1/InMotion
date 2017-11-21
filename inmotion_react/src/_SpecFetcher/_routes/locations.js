@@ -13,6 +13,12 @@ export const GET_LOCATIONS = (callback) => {
 
 export const INSERT_LOCATION = (location, callback) => {
 
+    fetcher.post({
+        path,
+        data: location.toServerJSON(),
+        callback
+    });
+
 };
 
 export const DELETE_LOCATION = (location, callback) => {

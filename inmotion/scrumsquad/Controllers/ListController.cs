@@ -64,11 +64,10 @@ namespace inmotion.Controllers
         }
 
         [HttpPost]
-        public HttpResponseMessage SaveList(List newList)
+        public IHttpActionResult SaveList(List newList)
         {
 
             bool found = false;
-            bool applied;
             GetLists().ForEach(l =>
             {
                 if (l.id == newList.id)
@@ -76,29 +75,33 @@ namespace inmotion.Controllers
             });
 
             MySqlCommand cmd;
+            bool applied = false;
             if (found)
             {
                 cmd = new MySqlCommand("UPDATE lists SET name = @name, location_id = @location_id WHERE lists.id = @LID");
                 cmd.Parameters.Add(new MySqlParameter("@name", newList.name));
                 cmd.Parameters.Add(new MySqlParameter("@location_id", newList.location_id));
                 cmd.Parameters.Add(new MySqlParameter("@LID", newList.id));
+                new BasicNonQuery(cmd, rowsAffected =>
+                {
+                    applied = rowsAffected >= 1;
+                });
             }
             else
             {
                 cmd = new MySqlCommand("INSERT INTO lists (name, location_id) VALUES (@name, @location_id)");
                 cmd.Parameters.Add(new MySqlParameter("@name", newList.name));
                 cmd.Parameters.Add(new MySqlParameter("@location_id", newList.location_id));
+                new BasicQueryForID(cmd, id => {
+                    newList.id = id;
+                    applied = true;
+                });
             }
 
-            new BasicNonQuery(cmd, rowsAffected =>
-            {
-                applied = rowsAffected >= 1;
-            });
-
-            if (!found)
-                return new HttpResponseMessage(HttpStatusCode.BadRequest);
+            if (!applied)
+                return InternalServerError();
             else
-                return new HttpResponseMessage(HttpStatusCode.OK);
+                return Ok(newList);
 
         }
 

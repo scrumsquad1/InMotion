@@ -32,8 +32,10 @@ function deleteList(state, list) {
 }
 
 function insertTask(state, task) {
+    console.log('HELLO');
+    console.log(task);
     state.lists.forEach(l => {
-        if (task.list.id === l.id) {
+        if (l && task.list.id === l.id) {
             l.tasks.push(task);
         }
     });
@@ -41,7 +43,7 @@ function insertTask(state, task) {
 
 function editTask(state, task) {
     state.lists.forEach(l => {
-        if (task.list.id === l.id) {
+        if (l && task.list.id === l.id) {
             l.tasks = l.tasks.map(t => t.id === task.id ? task : t);
         }
     });
@@ -49,7 +51,7 @@ function editTask(state, task) {
 
 function deleteTask(state, task) {
     state.lists.map(l => {
-        if (task.list.id === l.id) {
+        if (l && task.list.id === l.id) {
             l.tasks = l.tasks.filter(t => {
                 return t.id !== task.id;
             })
