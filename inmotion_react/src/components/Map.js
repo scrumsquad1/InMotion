@@ -10,6 +10,7 @@ import NewListOverlay from './menus/NewListOverlay';
 import action_SetListState from '../_redux/actions/maps/action_SetListState';
 import Task from '../data/Task';
 import action_InsertTask from '../_redux/actions/tasks/action_InsertTask';
+import action_DeleteLocation from '../_redux/actions/locations/action_DeleteLocation';
 
 class Map extends Component {
 
@@ -59,8 +60,15 @@ class Map extends Component {
                                     that.props.dispatch(action_SetListState({id: list.id, state: 'add'}));
                                 };
 
-                                return <button className="btn btn-primary form-control" onClick={onAddClick}>Add Item</button>;
+                                const onDeleteClick = () => {
+                                    that.props.dispatch(action_SetListState({id: list.id, state: 'delete'}));
+                                };
 
+                                return (<div>
+                                        <button className="btn btn-primary form-control" onClick={onAddClick}>Add Item</button>
+                                        <button className="btn btn-warning form-control" onClick={onDeleteClick}>Delete List</button>
+                                    </div>
+                                );
                             }
                             case 'add': {
 
@@ -82,6 +90,17 @@ class Map extends Component {
                                         <input className="form-control" placeholder="name" ref={uniqueInputRef}/>
                                         <button className="form-control btn btn-warning" onClick={onAddClick}>Add</button>
                                         <button className="form-control btn btn-primary" onClick={onCancelClick}>Cancel</button>
+                                    </div>
+                                );
+
+                            }
+
+                            case 'delete': {
+                                that.props.dispatch(action_DeleteLocation(list.location));
+
+                                return (
+                                    <div>
+                                        <p>delete called</p>
                                     </div>
                                 );
 

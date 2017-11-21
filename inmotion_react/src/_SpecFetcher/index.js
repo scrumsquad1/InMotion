@@ -22,11 +22,12 @@ export default {
             .send(data)
             .end(callback);
     },
-    delete: ({path, query, callback}) => {
+    delete: ({path, query, data, callback}) => {
         request
             .delete(path)
             .set(defaultHeaders)
             .query(query)
+            .send(data)
             .end(callback);
     },
     setAuthentication: ({username, password}) => {
