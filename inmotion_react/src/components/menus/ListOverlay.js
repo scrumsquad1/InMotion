@@ -5,6 +5,8 @@ import {bindActionCreators} from "redux";
 import action_SetListState from '../../_redux/actions/maps/action_SetListState';
 import action_DeleteList from '../../_redux/actions/lists/action_DeleteList';
 import thunkBindActionCreators from "../../_redux/thunkBindActionCreators";
+import action_InsertTask from "../../_redux/actions/tasks/action_InsertTask";
+import Task from "../../data/Task";
 
 
 class ListOverlay extends Component {
@@ -12,7 +14,7 @@ class ListOverlay extends Component {
     render() {
 
         const {list, listState} = this.props;
-        const {deleteList, setListState} = this.props;
+        const {deleteList, setListState, insertTask} = this.props;
         const {body_below, body_above} = this.refs;
 
         let header = (
@@ -44,7 +46,7 @@ class ListOverlay extends Component {
                             <a className="list-group-item btn">{task.subject}</a>
                         )}
                         <button className="btn btn-primary form-control" onClick={() => {
-                            setListState('addTask')
+                            setListState({id: list.id, state: 'addTask'})
                         }}>Add Task
                         </button>
                     </div>
@@ -52,6 +54,30 @@ class ListOverlay extends Component {
                 break;
             }
             case 'addTask': {
+                const uniqueInputRef = `list_add_${list.id}`;
+                body = (
+                    <div>
+                        {list.tasks.map(task =>
+                            <a className="list-group-item btn">{task.subject}</a>
+                        )}
+                        <div>
+                            <input className="form-control" placeholder="name" ref={uniqueInputRef}/>
+                            <button className="form-control btn btn-warning" onClick={() => {
+                                const newTask = new Task({
+                                    list,
+                                    subject: this.refs[uniqueInputRef].value
+                                });
+                                insertTask(newTask);
+                                setListState({id: list.id, state: 'visible'})
+                            }}>Add
+                            </button>
+                            <button className="form-control btn btn-primary" onClick={() => {
+                                setListState({id: list.id, state: 'visible'})
+                            }}>Cancel
+                            </button>
+                        </div>
+                    </div>
+                );
                 break;
             }
             case 'editTask': {
@@ -71,7 +97,7 @@ class ListOverlay extends Component {
                         }}>Delete List
                         </button>
                         <button className="list-group-item btn" onClick={() => {
-                            setListState(list.id, 'visible');
+                            setListState({id: list.id, state: 'visible'})
                         }}>Cancel
                         </button>
                     </div>
@@ -101,7 +127,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return thunkBindActionCreators({
         deleteList: action_DeleteList,
-        setListState: action_SetListState
+        setListState: action_SetListState,
+        insertTask: action_InsertTask
     }, dispatch);
 };
 

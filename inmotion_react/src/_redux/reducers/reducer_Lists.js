@@ -32,8 +32,6 @@ function deleteList(state, list) {
 }
 
 function insertTask(state, task) {
-    console.log('HELLO');
-    console.log(task);
     state.lists.forEach(l => {
         if (l && task.list.id === l.id) {
             l.tasks.push(task);
