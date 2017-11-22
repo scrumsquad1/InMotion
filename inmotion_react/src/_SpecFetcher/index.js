@@ -26,6 +26,9 @@ export default {
         request
             .delete(path)
             .set(defaultHeaders)
+            .set({
+                'Content-Type': 'application/json'
+            })
             .query(query)
             .send(data)
             .end(callback);

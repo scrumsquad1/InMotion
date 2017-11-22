@@ -28,7 +28,7 @@ function insertList(state, list) {
 }
 
 function deleteList(state, list) {
-    state.lists = state.lists.filter(l => l.id !== list.id);
+    state.lists = state.lists.map(l => (l && l.id !== list.id) ? l : undefined);
 }
 
 function insertTask(state, task) {

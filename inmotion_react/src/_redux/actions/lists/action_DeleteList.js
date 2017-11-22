@@ -1,4 +1,5 @@
 import {DELETE_LIST} from '../../../_SpecFetcher/_routes/lists';
+import action_SetListState from "../maps/action_SetListState";
 
 export const TYPE_LISTS_DELETELIST_START = 'type_lists_deletelist_start';
 export const TYPE_LISTS_DELETELIST_COMPLETE = 'type_lists_deletelist_complete';
@@ -9,7 +10,7 @@ export default (list) => (dispatch) => {
     dispatch({type: TYPE_LISTS_DELETELIST_START});
     DELETE_LIST(list, (err, result) => {
         if (!err) {
-            dispatch({type: TYPE_LISTS_DELETELIST_COMPLETE, payload: result});
+            dispatch({type: TYPE_LISTS_DELETELIST_COMPLETE, payload: list});
         } else {
             dispatch({type: TYPE_LISTS_DELETELIST_ERROR, payload: err});
         }

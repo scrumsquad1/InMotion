@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import OverlayPanelListElement from './OverlayPanelListElement';
-import action_ShowMenu from '../_redux/actions/maps/action_ShowMenu';
-import action_HideMenus from '../_redux/actions/maps/action_HideMenus';
+import action_ShowMenu from '../../_redux/actions/maps/action_ShowMenu';
+import action_HideMenus from '../../_redux/actions/maps/action_HideMenus';
 
 class OverlayPanelMenu extends Component {
     render() {

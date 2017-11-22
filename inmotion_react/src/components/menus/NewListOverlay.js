@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import OverlayPanelMenu from '../OverlayPanelMenu';
-import OverlayPanelListElement from '../OverlayPanelListElement';
+import OverlayPanelMenu from './OverlayPanelMenu';
 import List from '../../data/List';
 import Location from '../../data/Location';
 import action_InsertList from '../../_redux/actions/lists/action_InsertList';
