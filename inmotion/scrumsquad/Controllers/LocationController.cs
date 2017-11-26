@@ -13,27 +13,48 @@ namespace inmotion.Controllers
     public class LocationController : ApiController
     {
 
+        bool testing = false;
+        List<Location> locationList = new List<Location>();
+        // add default controller for normal opperation
+        public LocationController()
+        {
+            testing = false;
+        }
+
+        // add controller that lets you pass in a fake db for testing
+        public LocationController(List<Location> FakeDataList)
+        {
+            locationList = FakeDataList;
+            testing = true;
+        }
+
+        //List<Location> locationList = new List<Location>();
+
         public List<Location> GetLocationList()
         {
+            if (!testing)
+            {
 
-            List<Location> locationList = new List<Location>();
-
-            new BasicQuery(new MySqlCommand("SELECT * FROM locations"), (reader) => {
-                locationList.Add(new Location
-                {
-                    id = reader.GetInt32(0),
-                    lat = reader.GetDouble(1),
-                    lng = reader.GetDouble(2)
+                new BasicQuery(new MySqlCommand("SELECT * FROM locations"), (reader) => {
+                    locationList.Add(new Location
+                    {
+                        id = reader.GetInt32(0),
+                        lat = reader.GetDouble(1),
+                        lng = reader.GetDouble(2)
+                    });
                 });
-            });
-
+            }
             return locationList;
         }
 
         [HttpGet]
         public IHttpActionResult GetLocation(int id)  // make sure its string
         {
-            List<Location> locationList = GetLocationList();
+            if (!testing)
+            {
+                locationList = GetLocationList();
+            }
+
             var location = locationList.FirstOrDefault((p) => p.id == id);
 
             if (location == null)
@@ -49,7 +70,7 @@ namespace inmotion.Controllers
             bool found = false;
 
             MySqlCommand cmd = new MySqlCommand("DELETE FROM locations WHERE locations.id=@id");
-            cmd.Parameters.Add(new MySqlParameter("@id", passedList.id));
+            cmd.Parameters.Add(new MySqlParameter("@id", passedList.location_id));
             new BasicNonQuery(cmd, (rowsAffect) =>
             {
                 found = rowsAffect >= 1;
@@ -84,7 +105,8 @@ namespace inmotion.Controllers
                     newLocation.id = id;
                     applied = true;
                 });
-            } else
+            }
+            else
             {
                 cmd = new MySqlCommand("UPDATE locations SET lat = @lat, lng = @lng WHERE locations.id = @LID");
                 cmd.Parameters.Add(new MySqlParameter("@lat", newLocation.lat));

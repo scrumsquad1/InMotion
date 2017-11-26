@@ -9,8 +9,9 @@ namespace inmotion
 {
     public class BasicQuery
     {
-
-        private static string CONNECTION_STRING = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+        // changed this so tests could work
+        private static string CONNECTION_STRING = "server=scrumsquadserver.mysql.database.azure.com;uid=scrumuser@scrumsquadserver;pwd=scrumpass1!;database=scrumsquaddb";
+        //private static string CONNECTION_STRING = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
 
         public BasicQuery(MySqlCommand command, Action<MySqlDataReader> onLineRead)
         {

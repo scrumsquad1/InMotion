@@ -13,11 +13,31 @@ namespace inmotion.Controllers
     public class ListController : ApiController
     {
 
+        bool testing = false;
+        List<List> listOfList = new List<List>();
+        // add default controller for normal opperation
+        public ListController()
+        {
+            testing = false;
+        }
+
+        // add controller that lets you pass in a fake db for testing
+        public ListController(List<List> FakeDataList)
+        {
+            listOfList = FakeDataList;
+            testing = true;
+        }
+
+        //List<Location> locationList = new List<Location>();
+
         [HttpGet]
         public IHttpActionResult GetList(int id)  // make sure its string
         {
-            List<List> listOfLists = GetLists();
-            var list = listOfLists.FirstOrDefault((p) => p.id == id);
+            if (!testing)
+            {
+                listOfList = GetLists();
+            }
+            var list = listOfList.FirstOrDefault((p) => p.id == id);
 
             if (list == null)
                 return NotFound();
@@ -28,18 +48,20 @@ namespace inmotion.Controllers
         
         public List<List> GetLists()
         {
-
-            List<List> locationList = new List<List>();
-            new BasicQuery(new MySqlCommand("SELECT * FROM lists"), (reader) =>
+            if (!testing)
             {
-                locationList.Add(new List
+               // List<List> listOfList = new List<List>();
+                new BasicQuery(new MySqlCommand("SELECT * FROM lists"), (reader) =>
                 {
-                    id = reader.GetInt32(0),
-                    name = reader.GetString(1),
-                    location_id = reader.GetInt32(2)
+                    listOfList.Add(new List
+                    {
+                        id = reader.GetInt32(0),
+                        name = reader.GetString(1),
+                        location_id = reader.GetInt32(2)
+                    });
                 });
-            });
-            return locationList;
+            }
+            return listOfList;
 
         }
 

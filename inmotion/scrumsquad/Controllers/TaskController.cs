@@ -12,18 +12,53 @@ namespace inmotion.Controllers
     public class TaskController : ApiController
     {
 
+        bool testing = false;
+        List<Task> taskList = new List<Task>();
+        // add default controller for normal opperation
+        public TaskController()
+        {
+            testing = false;
+        }
+
+        // add controller that lets you pass in a fake db for testing
+        public TaskController(List<Task> FakeDataList)
+        {
+            taskList = FakeDataList;
+            testing = true;
+        }
+
+        //List<Location> locationList = new List<Location>();
+        [HttpGet]
+        public IHttpActionResult GetTask(int id)  // make sure its string
+        {
+            if (!testing)
+            {
+                taskList = GetTasks();
+            }
+
+            var task = taskList.FirstOrDefault((p) => p.id == id);
+
+            if (task == null)
+                return NotFound();
+
+            return Ok(task);
+
+        }
+
         public List<Task> GetTasks()
         {
-            List<Task> taskList = new List<Task>();
-            new BasicQuery(new MySqlCommand("SELECT * FROM tasks"), (reader) =>
-             {
-                 taskList.Add(new Task
+            if (!testing)
+            {              
+                new BasicQuery(new MySqlCommand("SELECT * FROM tasks"), (reader) =>
                  {
-                     id = reader.GetInt32(0),
-                     subject = reader.GetString(1),
-                     list_id = reader.GetInt32(2)
+                     taskList.Add(new Task
+                     {
+                         id = reader.GetInt32(0),
+                         subject = reader.GetString(1),
+                         list_id = reader.GetInt32(2)
+                     });
                  });
-             });
+            }
             return taskList;
         }
 
