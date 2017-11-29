@@ -22,12 +22,11 @@
     "superagent": "^3.8.1",
     "url-assembler": "^1.2.8"
   },
-  "proxy": "http://localhost:27622/",
+  "proxy": "http://inmotion20171121055522.azurewebsites.net",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "react-scripts test",
     "eject": "react-scripts eject"
-  },
-  "port": "8080"
+  }
 }
