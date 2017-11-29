@@ -19,7 +19,7 @@ export const DELETE_LOCATION = (location, callback) => {
 
 export const INSERT_LOCATION = (location, callback) => {
     fetcher.post({
-        path,
+        path: `http://inmotion20171121055522.azurewebsites.net${path}`,
         data: location.toServerJSON(),
         callback
     });

@@ -23,7 +23,9 @@ export default (location) => (dispatch) => {
             });
 
         } else {
+
             reject('No location passed');
+
         }
 
     })
