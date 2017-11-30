@@ -14,7 +14,7 @@ export default (task) => (dispatch) => {
                 dispatch({type: TYPE_TASKS_EDITTASK_ERROR, payload: err});
             } else {
                 //TODO convert result to class array
-                dispatch({type: TYPE_TASKS_EDITTASK_COMPLETE, payload: result});
+                dispatch({type: TYPE_TASKS_EDITTASK_COMPLETE, payload: task});
             }
         });
 
