@@ -7,7 +7,7 @@ import action_DeleteList from '../../_redux/actions/lists/action_DeleteList';
 import thunkBindActionCreators from "../../_redux/thunkBindActionCreators";
 import action_InsertTask from "../../_redux/actions/tasks/action_InsertTask";
 import action_EditTask from "../../_redux/actions/tasks/action_EditTask";
-import action_DeleteTask from "../../_redux/actions/tasks/action_DeleteTask"
+import action_DeleteTask from "../../_redux/actions/tasks/action_DeleteTask";
 import Task from "../../data/Task";
 
 
@@ -140,6 +140,7 @@ class ListOverlay extends Component {
               for (let i = 0; i < list.tasks.length; i++){
                   if (taskId === list.tasks[i].id){
                       theTask = list.tasks[i];
+                      console.log(theTask);
                       deleteTask(theTask);
                   }
               }
