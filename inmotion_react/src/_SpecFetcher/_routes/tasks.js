@@ -22,5 +22,10 @@ export const INSERT_TASK = (task, callback) => {
 };
 
 export const DELETE_TASK = (task, callback) => {
+    fetcher.delete({
+        path,
+        data: task.toServerJSON(),
+        callback
+    });
 
 };
