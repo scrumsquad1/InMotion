@@ -7,6 +7,7 @@ import action_DeleteList from '../../_redux/actions/lists/action_DeleteList';
 import thunkBindActionCreators from "../../_redux/thunkBindActionCreators";
 import action_InsertTask from "../../_redux/actions/tasks/action_InsertTask";
 import action_EditTask from "../../_redux/actions/tasks/action_EditTask";
+import action_DeleteTask from "../../_redux/actions/tasks/action_DeleteTask"
 import Task from "../../data/Task";
 
 
@@ -15,7 +16,7 @@ class ListOverlay extends Component {
     render() {
 
         const {list, listState} = this.props;
-        const {deleteList, setListState, insertTask, editTask} = this.props;
+        const {deleteList, setListState, insertTask, editTask, deleteTask} = this.props;
         const {body_below, body_above} = this.refs;
 
         let header = (
@@ -135,6 +136,17 @@ class ListOverlay extends Component {
             }}>Edit
             </button>
             <button className="form-control btn btn-primary" onClick={() => {
+              let theTask;
+              for (let i = 0; i < list.tasks.length; i++){
+                  if (taskId === list.tasks[i].id){
+                      theTask = list.tasks[i];
+                      deleteTask(theTask);
+                  }
+              }
+                setListState({id: list.id, state: 'visible'})
+            }}>Delete
+            </button>
+            <button className="form-control btn btn-primary" onClick={() => {
                 setListState({id: list.id, state: 'visible'})
             }}>Cancel
             </button>
@@ -162,7 +174,8 @@ const mapDispatchToProps = (dispatch) => {
         deleteList: action_DeleteList,
         setListState: action_SetListState,
         insertTask: action_InsertTask,
-        editTask: action_EditTask
+        editTask: action_EditTask,
+        deleteTask: action_DeleteTask
     }, dispatch);
 };
 
