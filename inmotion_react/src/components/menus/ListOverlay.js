@@ -138,9 +138,9 @@ class ListOverlay extends Component {
             <button className="form-control btn btn-primary" onClick={() => {
               let theTask;
               for (let i = 0; i < list.tasks.length; i++){
+                  console.log(list.tasks[i].id);
                   if (taskId === list.tasks[i].id){
                       theTask = list.tasks[i];
-                      console.log(theTask);
                       deleteTask(theTask);
                   }
               }
