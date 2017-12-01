@@ -117,6 +117,7 @@ class ListOverlay extends Component {
         if (listState.indexOf('editTask') > -1) {
 
             let taskId = listState.split("k")[1];
+
             const uniqueInputRef = "task_edit_" + taskId;
             body = (
                 <div>
@@ -138,8 +139,7 @@ class ListOverlay extends Component {
             <button className="form-control btn btn-primary" onClick={() => {
               let theTask;
               for (let i = 0; i < list.tasks.length; i++){
-                  console.log(list.tasks[i].id);
-                  if (taskId === list.tasks[i].id){
+                  if (parseInt(taskId) === list.tasks[i].id){
                       theTask = list.tasks[i];
                       deleteTask(theTask);
                   }
