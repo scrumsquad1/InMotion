@@ -58,7 +58,7 @@ namespace scrumsquad.Tests
             var controller = new LocationController(); // use the other constructor
 
             var result = controller.GetLocationList() as List<Location>;
-            Assert.AreEqual(34, result.Count);
+            Assert.AreEqual(35, result.Count);
         }
 
         [TestMethod]

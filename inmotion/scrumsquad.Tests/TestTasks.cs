@@ -26,13 +26,13 @@ namespace inmotion.Tests
         private List<Models.Task> GenerateFakeDataList()
         {
             List<Models.Task> workingList = new List<Models.Task>();
-            for (int i = 3; i < 6; i++)
+            for (int i = 1; i < 4; i++)
             {
 
                 Models.Task nextTask = new Models.Task();
 
                 nextTask.id = i;
-                nextTask.subject = "test task " + i;
+                nextTask.subject = "My test Task" + i;
                 nextTask.list_id = i; 
                 workingList.Add(nextTask);
             }
@@ -67,10 +67,10 @@ namespace inmotion.Tests
             List<Models.Task> testTasks = GenerateFakeDataList();
             var controller = new TaskController(testTasks); // use 1 of 2 constructors
 
-            IHttpActionResult result = controller.GetTask(5);
+            IHttpActionResult result = controller.GetTask(2);
             var contentResult = result as OkNegotiatedContentResult<Models.Task>;
 
-            Assert.AreEqual(testTasks[2].id, contentResult.Content.id);
+            Assert.AreEqual(testTasks[1].id, contentResult.Content.id);
 
         }
 
@@ -80,7 +80,7 @@ namespace inmotion.Tests
             List<Models.Task> testTasks = GenerateFakeDataList();
             var controller = new TaskController(); // use 1 of 2 constructors
 
-            IHttpActionResult result = controller.GetTask(5);
+            IHttpActionResult result = controller.GetTask(3);
             var contentResult = result as OkNegotiatedContentResult<Models.Task>;
 
             Assert.AreEqual(testTasks[2].id, contentResult.Content.id);

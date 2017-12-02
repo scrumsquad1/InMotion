@@ -58,7 +58,7 @@ namespace inmotion.Tests
             var controller = new ListController(); // use the other constructor
 
             var result = controller.GetLists() as List<List>;
-            Assert.AreEqual(2, result.Count);
+            Assert.AreEqual(3, result.Count);
         }
 
         [TestMethod]
