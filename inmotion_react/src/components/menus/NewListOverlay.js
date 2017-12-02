@@ -10,25 +10,30 @@ class NewListOverlay extends Component {
 
     render() {
         return <OverlayPanelMenu name="NewList" parentMenu="main" showCancel={true}>
-            <form>
-                <input className="form-control" type="text" placeholder="Name" ref="list_name"/>
-            </form>
-            <button className="btn btn-warning form-control" onClick={() => {
-
-                const newList = new List({
-                    name: this.refs.list_name.value,
-                    location: new Location({
-                        lat: this.props.mapStore.menuLocation.lat,
-                        lng: this.props.mapStore.menuLocation.lng,
-                    })
-                });
-
-                this.props.dispatch(action_InsertList(newList));
-                this.props.dispatch(action_HideMenus());
-
-            }}> Submit
-            </button>
-        </OverlayPanelMenu>
+            <input className="form-control" type="text" autoFocus={true} placeholder="Name" onKeyDown={e => {
+                switch (e.key) {
+                    case 'Enter': {
+                        const newList = new List({
+                            name: e.target.value,
+                            location: new Location({
+                                lat: this.props.mapStore.menuLocation.lat,
+                                lng: this.props.mapStore.menuLocation.lng,
+                            })
+                        });
+                        this.props.dispatch(action_InsertList(newList));
+                        this.props.dispatch(action_HideMenus());
+                        break;
+                    }
+                    case 'Escape': {
+                        this.props.dispatch(action_HideMenus());
+                        break;
+                    }
+                    default: {
+                        break;
+                    }
+                }
+            }}/>
+        </OverlayPanelMenu>;
     }
 
 }

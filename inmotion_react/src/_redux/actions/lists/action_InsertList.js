@@ -11,38 +11,31 @@ export default (list) => (dispatch) => {
 
     dispatch({type: TYPE_LISTS_INSERTLIST_START});
 
-    return new Promise((resolve, reject) => {
+    function insertList() {
+        INSERT_LIST(list, (err, result) => {
+            if (err) {
+                dispatch({type: TYPE_LISTS_INSERTLIST_ERROR, payload: err});
+            } else {
+                list.id = JSON.parse(result.text).id;
+                dispatch({type: TYPE_LISTS_INSERTLIST_COMPLETE, payload: list});
+                dispatch({type: TYPE_MAPS_SETLISTSTATE, payload: {id: list.id, state: 'visible'}});
+            }
+        });
+    }
 
-        function insertList() {
-            INSERT_LIST(list, (err, result) => {
-                if (err) {
-                    dispatch({type: TYPE_LISTS_INSERTLIST_ERROR, payload: err});
-                    reject(err);
-                } else {
-                    list.id = JSON.parse(result.text).id;
-                    dispatch({type: TYPE_LISTS_INSERTLIST_COMPLETE, payload: list});
-                    dispatch({type: TYPE_MAPS_SETLISTSTATE, payload: {id: list.id, state: 'visible'}});
-                    resolve();
-                }
-            });
-        }
-
-        if (!list.location.id) {
-            console.log('Location to be inserted');
-            INSERT_LOCATION(list.location, (err, result) => {
-                if (err) {
-                    dispatch({type: TYPE_LISTS_INSERTLIST_ERROR, payload: err});
-                    reject(err);
-                } else {
-                    list.location.id = JSON.parse(result.text).id;
-                    dispatch({type: TYPE_LOCATIONS_INSERTLOCATION_COMPLETE, payload: list.location});
-                    insertList();
-                }
-            });
-        } else {
-            insertList();
-        }
-
-    })
+    if (!list.location.id) {
+        console.log('Location to be inserted');
+        INSERT_LOCATION(list.location, (err, result) => {
+            if (err) {
+                dispatch({type: TYPE_LISTS_INSERTLIST_ERROR, payload: err});
+            } else {
+                list.location.id = JSON.parse(result.text).id;
+                dispatch({type: TYPE_LOCATIONS_INSERTLOCATION_COMPLETE, payload: list.location});
+                insertList();
+            }
+        });
+    } else {
+        insertList();
+    }
 
 }

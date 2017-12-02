@@ -19,8 +19,7 @@ const middleware = applyMiddleware(
     thunk,
     createLogger({
         collapsed: true,
-        diff: true,
-        predicate: (getState, action) => action.type.substr(0, 12) !== '@@redux-form'
+        diff: true
     }),
 );
 

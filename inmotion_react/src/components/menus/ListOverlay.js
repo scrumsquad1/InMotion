@@ -1,15 +1,14 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {bindActionCreators} from "redux";
 
 import action_SetListState from '../../_redux/actions/maps/action_SetListState';
 import action_DeleteList from '../../_redux/actions/lists/action_DeleteList';
-import thunkBindActionCreators from "../../_redux/thunkBindActionCreators";
-import action_InsertTask from "../../_redux/actions/tasks/action_InsertTask";
-import action_EditTask from "../../_redux/actions/tasks/action_EditTask";
-import action_DeleteTask from "../../_redux/actions/tasks/action_DeleteTask";
-import Task from "../../data/Task";
-
+import thunkBindActionCreators from '../../_redux/thunkBindActionCreators';
+import action_InsertTask from '../../_redux/actions/tasks/action_InsertTask';
+import action_EditTask from '../../_redux/actions/tasks/action_EditTask';
+import action_DeleteTask from '../../_redux/actions/tasks/action_DeleteTask';
+import Task from '../../data/Task';
+import _ from 'lodash';
 
 class ListOverlay extends Component {
 
@@ -17,7 +16,6 @@ class ListOverlay extends Component {
 
         const {list, listState} = this.props;
         const {deleteList, setListState, insertTask, editTask, deleteTask} = this.props;
-        const {body_below, body_above} = this.refs;
 
         let header = (
             <div className="panel-heading clearfix">
@@ -46,11 +44,11 @@ class ListOverlay extends Component {
                     <div>
                         {list.tasks.map(task =>
                             <a onClick={() => {
-                                setListState({id: list.id, state: 'editTask' + task.id})
+                                setListState({id: list.id, state: 'editTask_' + task.id});
                             }} className="list-group-item btn">{task.subject}</a>
                         )}
                         <button className="btn btn-primary form-control" onClick={() => {
-                            setListState({id: list.id, state: 'addTask'})
+                            setListState({id: list.id, state: 'addTask'});
                         }}>Add Task
                         </button>
                     </div>
@@ -58,36 +56,39 @@ class ListOverlay extends Component {
                 break;
             }
             case 'addTask': {
-                const uniqueInputRef = `list_add_${list.id}`;
                 body = (
                     <div>
                         {list.tasks.map(task =>
                             <a className="list-group-item btn">{task.subject}</a>
                         )}
                         <div>
-                            <input className="form-control" placeholder="Subject" ref={uniqueInputRef}/>
-                            <button className="form-control btn btn-warning" onClick={() => {
-                                    const newTask = new Task({
-                                        list,
-                                        subject: this.refs[uniqueInputRef].value
-                                    });
-                                    insertTask(newTask);
-                                    setListState({id: list.id, state: 'visible'})
-                            }}>Add
-                            </button>
+                            <input className="form-control" placeholder="Subject" autoFocus={true} onKeyDown={(e) => {
+                                switch (e.key) {
+                                    case 'Enter': {
+                                        const newTask = new Task({
+                                            list,
+                                            subject: e.target.value
+                                        });
+                                        insertTask(newTask);
+                                        setListState({id: list.id, state: 'visible'});
+                                        break;
+                                    }
+                                    case 'Escape': {
+                                        setListState({id: list.id, state: 'visible'});
+                                        break;
+                                    }
+                                    default: {
+                                        break;
+                                    }
+                                }
+                            }}/>
                             <button className="form-control btn btn-primary" onClick={() => {
-                                setListState({id: list.id, state: 'visible'})
+                                setListState({id: list.id, state: 'visible'});
                             }}>Cancel
                             </button>
                         </div>
                     </div>
                 );
-                break;
-            }
-            /* case 'editTask': {
-                 break;
-             }*/
-            case 'deleteTask': {
                 break;
             }
             case 'deleteList': {
@@ -101,7 +102,7 @@ class ListOverlay extends Component {
                         }}>Delete List
                         </button>
                         <button className="list-group-item btn" onClick={() => {
-                            setListState({id: list.id, state: 'visible'})
+                            setListState({id: list.id, state: 'visible'});
                         }}>Cancel
                         </button>
                     </div>
@@ -109,51 +110,54 @@ class ListOverlay extends Component {
                 break;
             }
             default: {
+
+                if (listState.indexOf('editTask') > -1) {
+
+                    const taskID = parseInt(listState.split('_')[1]);
+
+                    let task;
+                    for (let i in list.tasks) {
+                        let currTask = list.tasks[i];
+                        if (currTask.id === taskID) {
+                            task = currTask;
+                            break;
+                        }
+                    }
+
+                    body = (
+                        <div>
+                            {list.tasks.map(task => {
+                                if (task.id !== taskID) {
+                                    return <a className="list-group-item btn">{task.subject}</a>;
+                                } else {
+                                    return <input className="form-control" placeholder={task.subject} autoFocus={true} onKeyDown={(e) => {
+                                        switch (e.key) {
+                                            case 'Enter': {
+                                                const taskClone = _.cloneDeep(task);
+                                                taskClone.subject = e.target.value;
+                                                editTask(taskClone);
+                                                setListState({id: list.id, state: 'visible'});
+                                                break;
+                                            }
+                                            case 'Escape': {
+                                                setListState({id: list.id, state: 'visible'});
+                                                break;
+                                            }
+                                            default: {
+                                                break;
+                                            }
+                                        }
+                                    }}/>;
+                                }
+                            })}
+                        </div>
+                    );
+                }
+
                 break;
+
             }
 
-        }
-
-        if (listState.indexOf('editTask') > -1) {
-
-            let taskId = listState.split("k")[1];
-
-            const uniqueInputRef = "task_edit_" + taskId;
-            body = (
-                <div>
-                    {list.tasks.map(task =>
-                        <a className="list-group-item btn">{task.subject}</a>
-                    )}
-                    <div>
-                        <input className="form-control" placeholder="subject" ref={uniqueInputRef}/>
-                        <button className="form-control btn btn-warning" onClick={() => {
-                                const newTask = new Task({
-                                    list,
-                                    id: taskId,
-                                    subject: this.refs[uniqueInputRef].value
-                                });
-                                editTask(newTask);
-                                setListState({id: list.id, state: 'visible'})
-                        }}>Edit
-                        </button>
-                        <button className="form-control btn btn-primary" onClick={() => {
-                            let theTask;
-                            for (let i = 0; i < list.tasks.length; i++){
-                                if (parseInt(taskId) === list.tasks[i].id){
-                                    theTask = list.tasks[i];
-                                    deleteTask(theTask);
-                                }
-                            }
-                            setListState({id: list.id, state: 'visible'})
-                        }}>Delete
-                        </button>
-                        <button className="form-control btn btn-primary" onClick={() => {
-                            setListState({id: list.id, state: 'visible'})
-                        }}>Cancel
-                        </button>
-                    </div>
-                </div>
-            );
         }
 
         return <div className="panel panel-default" style={{width: 200}}>
@@ -167,7 +171,7 @@ class ListOverlay extends Component {
 }
 
 const mapStateToProps = (state) => {
-    return {}
+    return {};
 };
 
 const mapDispatchToProps = (dispatch) => {
