@@ -37,17 +37,28 @@ class ListOverlay extends Component {
             </div>
         );
 
+        let errorText = (
+            <p>
+                Enter subject and priority
+            </p>
+        );
+
         let footer = null;
 
         switch (listState) {
 
             case 'visible': {
+                errorText = (
+                    <p>
+                        Enter subject and priority
+                    </p>
+                );
                 body = (
                     <div>
                         {list.tasks.map(task =>
                             <a onClick={() => {
-                    setListState({id: list.id, state: 'editTask' + task.id})
-                }} className="list-group-item btn">{task.subject}</a>
+                                setListState({id: list.id, state: 'editTask' + task.id})
+                            }} className="list-group-item btn">{task.subject}</a>
                         )}
                         <button className="btn btn-primary form-control" onClick={() => {
                             setListState({id: list.id, state: 'addTask'})
@@ -59,20 +70,31 @@ class ListOverlay extends Component {
             }
             case 'addTask': {
                 const uniqueInputRef = `list_add_${list.id}`;
+                const uniquePriorityRef = `list_priority_${list.id}`;
                 body = (
                     <div>
                         {list.tasks.map(task =>
                             <a className="list-group-item btn">{task.subject}</a>
                         )}
                         <div>
-                            <input className="form-control" placeholder="name" ref={uniqueInputRef}/>
+                            <input className="form-control" placeholder={task.subject} ref={uniqueInputRef}/>
+                            <input className="form-control" placeholder="1" ref={uniquePriorityRef}/>
+                            {errorText}
                             <button className="form-control btn btn-warning" onClick={() => {
-                                const newTask = new Task({
-                                    list,
-                                    subject: this.refs[uniqueInputRef].value
-                                });
-                                insertTask(newTask);
-                                setListState({id: list.id, state: 'visible'})
+                                let checkSubject = this.refs[uniqueInputRef].value;
+                                let checkPriority = parseInt(this.refs[uniquePriorityRef].value);
+                                if (!isNaN(checkPriority) && checkSubject){
+                                    const newTask = new Task({
+                                        list,
+                                        subject: this.refs[uniqueInputRef].value,
+                                        priority: checkPriority
+                                    });
+                                    insertTask(newTask);
+                                    setListState({id: list.id, state: 'visible'})
+                                }
+                                else {
+                                    errorText = (<p>Subject and priority need valid values</p>);
+                                }
                             }}>Add
                             </button>
                             <button className="form-control btn btn-primary" onClick={() => {
@@ -84,9 +106,9 @@ class ListOverlay extends Component {
                 );
                 break;
             }
-            case 'editTask': {
-                break;
-            }
+            /* case 'editTask': {
+                 break;
+             }*/
             case 'deleteTask': {
                 break;
             }
@@ -119,41 +141,51 @@ class ListOverlay extends Component {
             let taskId = listState.split("k")[1];
 
             const uniqueInputRef = "task_edit_" + taskId;
+            const uniquePriorityRef = "task_priority_" + taskId;
             body = (
                 <div>
-                {list.tasks.map(task =>
-                <a className="list-group-item btn">{task.subject}</a>
-                )}
-        <div>
-            <input className="form-control" placeholder="subject" ref={uniqueInputRef}/>
-            <button className="form-control btn btn-warning" onClick={() => {
-                const newTask = new Task({
-                    list,
-                    id: taskId,
-                    subject: this.refs[uniqueInputRef].value
-                });
-                editTask(newTask);
-                setListState({id: list.id, state: 'visible'})
-            }}>Edit
-            </button>
-            <button className="form-control btn btn-primary" onClick={() => {
-              let theTask;
-              for (let i = 0; i < list.tasks.length; i++){
-                  if (parseInt(taskId) === list.tasks[i].id){
-                      theTask = list.tasks[i];
-                      deleteTask(theTask);
-                  }
-              }
-                setListState({id: list.id, state: 'visible'})
-            }}>Delete
-            </button>
-            <button className="form-control btn btn-primary" onClick={() => {
-                setListState({id: list.id, state: 'visible'})
-            }}>Cancel
-            </button>
-            </div>
-            </div>
-        );
+                    {list.tasks.map(task =>
+                        <a className="list-group-item btn">{task.subject}</a>
+                    )}
+                    <div>
+                        <input className="form-control" placeholder="subject" ref={uniqueInputRef}/>
+                        <input className="form-control" placeholder="1" ref={uniquePriorityRef}/>
+                        {errorText}
+                        <button className="form-control btn btn-warning" onClick={() => {
+                            let checkSubject = this.refs[uniqueInputRef].value;
+                            let checkPriority = parseInt(this.refs[uniquePriorityRef].value);
+                            if (!isNaN(checkPriority) && checkSubject) {
+                                const newTask = new Task({
+                                    list,
+                                    subject: this.refs[uniqueInputRef].value,
+                                    priority: checkPriority
+                                });
+                                editTask(newTask);
+                                setListState({id: list.id, state: 'visible'})
+                            }
+                            else{
+                                errorText = (<p>Subject and priority need valid values</p>);
+                            }
+                        }}>Edit
+                        </button>
+                        <button className="form-control btn btn-primary" onClick={() => {
+                            let theTask;
+                            for (let i = 0; i < list.tasks.length; i++){
+                                if (parseInt(taskId) === list.tasks[i].id){
+                                    theTask = list.tasks[i];
+                                    deleteTask(theTask);
+                                }
+                            }
+                            setListState({id: list.id, state: 'visible'})
+                        }}>Delete
+                        </button>
+                        <button className="form-control btn btn-primary" onClick={() => {
+                            setListState({id: list.id, state: 'visible'})
+                        }}>Cancel
+                        </button>
+                    </div>
+                </div>
+            );
         }
 
         return <div className="panel panel-default" style={{width: 200}}>
