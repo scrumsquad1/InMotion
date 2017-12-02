@@ -33,6 +33,7 @@ namespace inmotion.Tests
 
                 nextTask.id = i;
                 nextTask.subject = "test task " + i;
+                nextTask.priority = i; 
                 nextTask.list_id = i; 
                 workingList.Add(nextTask);
             }
@@ -94,6 +95,7 @@ namespace inmotion.Tests
             var taskController = new TaskController();
             Models.Task testTask = new Models.Task();
             testTask.subject = "test task";
+            testTask.priority = 1;
             testTask.list_id = 3; 
 
             IHttpActionResult result = taskController.SaveTask(testTask);
@@ -116,6 +118,7 @@ namespace inmotion.Tests
             var controller = new TaskController();
             Models.Task testTask = new Models.Task();
             testTask.subject = "test task";
+            testTask.priority = 1;
             testTask.list_id = 3;
 
             IHttpActionResult result = controller.SaveTask(testTask);

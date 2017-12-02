@@ -55,10 +55,13 @@ namespace inmotion.Controllers
                      {
                          id = reader.GetInt32(0),
                          subject = reader.GetString(1),
-                         list_id = reader.GetInt32(2)
+                         priority = reader.GetInt32(2),
+                         list_id = reader.GetInt32(3)
                      });
                  });
+                taskList.Sort();
             }
+            
             return taskList;
         }
 
@@ -95,8 +98,9 @@ namespace inmotion.Controllers
             bool applied = false;
             if (!found)
             {
-                cmd = new MySqlCommand("INSERT INTO tasks (subject, list_id) VALUES (@subject, @list_id)");
+                cmd = new MySqlCommand("INSERT INTO tasks (subject, priority, list_id) VALUES (@subject, @priority, @list_id)");
                 cmd.Parameters.Add(new MySqlParameter("@subject", newTask.subject));
+                cmd.Parameters.Add(new MySqlParameter("@priority", newTask.priority));
                 cmd.Parameters.Add(new MySqlParameter("@list_id", newTask.list_id));
                 new BasicQueryForID(cmd, id =>
                 {
@@ -105,8 +109,9 @@ namespace inmotion.Controllers
                 applied = true;
             } else
             {
-                cmd = new MySqlCommand("UPDATE tasks SET subject = @subject, list_id = @list_id WHERE tasks.id = @TID");
+                cmd = new MySqlCommand("UPDATE tasks SET subject = @subject, priority= @priority, list_id = @list_id WHERE tasks.id = @TID");
                 cmd.Parameters.Add(new MySqlParameter("@subject", newTask.subject));
+                cmd.Parameters.Add(new MySqlParameter("@priority", newTask.priority));
                 cmd.Parameters.Add(new MySqlParameter("@list_id", newTask.list_id));
                 cmd.Parameters.Add(new MySqlParameter("@TID", newTask.id));
                 new BasicNonQuery(cmd, rowsAffected =>

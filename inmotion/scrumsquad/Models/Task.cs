@@ -15,5 +15,16 @@ namespace inmotion.Models
         
         public int priority { get; set; }
 
+        public int CompareTo(Task other)
+        {
+            // If they are equal, sort alphabetically by subject
+            if (this.priority == other.priority)
+            {
+                return this.subject.CompareTo(other.subject);
+            }
+            // Otherwise sort by priority from high to low
+            return other.priority.CompareTo(this.priority);
+        }
+
     }
 }
