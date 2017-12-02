@@ -45,7 +45,7 @@ export default () => (dispatch) => {
             });
 
             const tasks = [];
-            tasksData.map(({id, subject, priority, list_id}) => {
+            tasksData.map(({id, subject, list_id, priority}) => {
                 const newTask = new Task({id, subject, priority});
                 newTask.list = lists[list_id];
                 tasks[id] = newTask;

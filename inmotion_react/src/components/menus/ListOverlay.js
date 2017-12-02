@@ -37,22 +37,11 @@ class ListOverlay extends Component {
             </div>
         );
 
-        let errorText = (
-            <p>
-                Enter subject and priority
-            </p>
-        );
-
         let footer = null;
 
         switch (listState) {
 
             case 'visible': {
-                errorText = (
-                    <p>
-                        Enter subject and priority
-                    </p>
-                );
                 body = (
                     <div>
                         {list.tasks.map(task =>
@@ -70,7 +59,6 @@ class ListOverlay extends Component {
             }
             case 'addTask': {
                 const uniqueInputRef = `list_add_${list.id}`;
-                const uniquePriorityRef = `list_priority_${list.id}`;
                 body = (
                     <div>
                         {list.tasks.map(task =>
@@ -78,23 +66,13 @@ class ListOverlay extends Component {
                         )}
                         <div>
                             <input className="form-control" placeholder="Subject" ref={uniqueInputRef}/>
-                            <input className="form-control" placeholder="1" ref={uniquePriorityRef}/>
-                            {errorText}
                             <button className="form-control btn btn-warning" onClick={() => {
-                                let checkSubject = this.refs[uniqueInputRef].value;
-                                let checkPriority = parseInt(this.refs[uniquePriorityRef].value);
-                                if (!isNaN(checkPriority) && checkSubject){
                                     const newTask = new Task({
                                         list,
-                                        subject: this.refs[uniqueInputRef].value,
-                                        priority: checkPriority
+                                        subject: this.refs[uniqueInputRef].value
                                     });
                                     insertTask(newTask);
                                     setListState({id: list.id, state: 'visible'})
-                                }
-                                else {
-                                    errorText = (<p>Subject and priority need valid values</p>);
-                                }
                             }}>Add
                             </button>
                             <button className="form-control btn btn-primary" onClick={() => {
@@ -141,7 +119,6 @@ class ListOverlay extends Component {
             let taskId = listState.split("k")[1];
 
             const uniqueInputRef = "task_edit_" + taskId;
-            const uniquePriorityRef = "task_priority_" + taskId;
             body = (
                 <div>
                     {list.tasks.map(task =>
@@ -149,23 +126,14 @@ class ListOverlay extends Component {
                     )}
                     <div>
                         <input className="form-control" placeholder="subject" ref={uniqueInputRef}/>
-                        <input className="form-control" placeholder="1" ref={uniquePriorityRef}/>
-                        {errorText}
                         <button className="form-control btn btn-warning" onClick={() => {
-                            let checkSubject = this.refs[uniqueInputRef].value;
-                            let checkPriority = parseInt(this.refs[uniquePriorityRef].value);
-                            if (!isNaN(checkPriority) && checkSubject) {
                                 const newTask = new Task({
                                     list,
-                                    subject: this.refs[uniqueInputRef].value,
-                                    priority: checkPriority
+                                    id: taskId,
+                                    subject: this.refs[uniqueInputRef].value
                                 });
                                 editTask(newTask);
                                 setListState({id: list.id, state: 'visible'})
-                            }
-                            else{
-                                errorText = (<p>Subject and priority need valid values</p>);
-                            }
                         }}>Edit
                         </button>
                         <button className="form-control btn btn-primary" onClick={() => {
