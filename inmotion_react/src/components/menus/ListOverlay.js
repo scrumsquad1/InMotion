@@ -77,7 +77,7 @@ class ListOverlay extends Component {
                             <a className="list-group-item btn">{task.subject}</a>
                         )}
                         <div>
-                            <input className="form-control" placeholder={task.subject} ref={uniqueInputRef}/>
+                            <input className="form-control" placeholder="Subject" ref={uniqueInputRef}/>
                             <input className="form-control" placeholder="1" ref={uniquePriorityRef}/>
                             {errorText}
                             <button className="form-control btn btn-warning" onClick={() => {
