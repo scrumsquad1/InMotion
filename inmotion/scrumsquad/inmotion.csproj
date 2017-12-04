@@ -99,6 +99,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bootstrap.css" />
     <Content Include="docs\MySqlCommand.xml" />
     <Content Include="docs\MySqlCommandBuilder.xml" />
     <Content Include="docs\MySqlConnection.xml" />
@@ -110,10 +111,12 @@
     <Content Include="docs\MySqlParameter.xml" />
     <Content Include="docs\MySqlParameterCollection.xml" />
     <Content Include="docs\MySqlTransaction.xml" />
+    <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="index.html" />
-    <Content Include="Scripts\maps.js" />
-    <Content Include="Scripts\NoteList.js" />
+    <Content Include="service-worker.js" />
+    <Content Include="static\css\main.13e5df30.css" />
+    <Content Include="static\js\main.a3c8d326.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -133,8 +136,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="dummy.json" />
+    <Content Include="asset-manifest.json" />
+    <Content Include="manifest.json" />
     <None Include="packages.config" />
+    <Content Include="static\css\main.13e5df30.css.map" />
+    <Content Include="static\js\main.a3c8d326.js.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
