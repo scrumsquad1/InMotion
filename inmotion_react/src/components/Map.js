@@ -58,7 +58,16 @@ class Map extends Component {
                     }
                 })}
                 {this.generateMenuOverlays()}
+                <OverlayView
+                    position={{lat: 47.586224, lng: -122.152861}}
+                    mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}>
+                    <div style={{width: 400, height: 100, background: 'grey', opacity: 0.9, textAlign: 'center', 'padding-top': 1}}>
+                        <h3>Welcome To InMotion</h3>
+                        <h4>Right click anywhere to create a list</h4>
+                    </div>
+                </OverlayView>
             </GoogleMap>
+
         )
 
     }

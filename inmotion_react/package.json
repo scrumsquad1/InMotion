@@ -21,7 +21,7 @@
     "superagent": "^3.8.1",
     "url-assembler": "^1.2.8"
   },
-  "proxy": "http://inmotion20171121055522.azurewebsites.net",
+  "proxy": "http://inmotion20171204064650.azurewebsites.net",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
