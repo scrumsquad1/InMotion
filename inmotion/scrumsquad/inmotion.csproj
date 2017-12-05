@@ -141,6 +141,10 @@
     <None Include="packages.config" />
     <Content Include="static\css\main.13e5df30.css.map" />
     <Content Include="static\js\main.a3c8d326.js.map" />
+    <None Include="Properties\PublishProfiles\inmotion20171121055522 - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\inmotion20171204064650 - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\inmotion20171205033549 - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\scrumsquad20171016115101 - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
